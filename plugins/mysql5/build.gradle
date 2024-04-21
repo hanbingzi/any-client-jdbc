@@ -1,4 +1,3 @@
-//OSGI引用，暂时没搞懂怎么弄
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.5'

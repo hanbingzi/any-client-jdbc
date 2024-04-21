@@ -1,4 +1,4 @@
-package com.hanshan.app;
+package com.hanshan;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
