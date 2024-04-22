@@ -1,4 +1,4 @@
-package com.hanshan.api;
+package com.hanshan.sqlbase.meta;
 
 import lombok.Data;
 

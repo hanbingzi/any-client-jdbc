@@ -1,6 +1,6 @@
 package com.hanshan.app.web;
 
-import com.hanshan.api.ColumnMeta;
+import com.hanshan.sqlbase.meta.ColumnMeta;
 
 public class JdbcBaseRest {
     private ColumnMeta meta;
