@@ -1,6 +1,6 @@
-package com.hanshan.app.config;
+package com.hanshan;
 
-public interface IConfigurationApi {
+public interface IJdbcConfigurationApi {
 
     String getDriver();
 
@@ -13,6 +13,10 @@ public interface IConfigurationApi {
     Boolean hasDatabase();
 
     Boolean hasSchema();
+
+    Integer getMaximumPoolSize();
+
+    Integer getMinimumIdle();
 
 
 }

@@ -1,18 +1,17 @@
-package com.hanshan.app.config;
+package com.hanshan.mysql8.config;
 
+import com.hanshan.IJdbcConfigurationApi;
 import lombok.Data;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@ConfigurationProperties(prefix = "anyclient.jdbc.mysql8")
 @Data
-public class Mysql8Configuration implements IConfigurationApi{
+public class Mysql8Configuration implements IJdbcConfigurationApi {
     private String driver;
     private String jdbcUrl;
-    private Boolean hasDatabase=false;
-    private Boolean hasSchema=false;
+    private Boolean hasDatabase = false;
+    private Boolean hasSchema = false;
+    private Integer maximumPoolSize = 3;
+    private Integer minimumIdle = 1;
+
     @Override
     public String getDriver() {
         return this.driver;
@@ -41,5 +40,15 @@ public class Mysql8Configuration implements IConfigurationApi{
     @Override
     public Boolean hasSchema() {
         return this.hasSchema;
+    }
+
+    @Override
+    public Integer getMaximumPoolSize() {
+        return this.maximumPoolSize;
+    }
+
+    @Override
+    public Integer getMinimumIdle() {
+        return this.minimumIdle;
     }
 }

@@ -1,6 +1,5 @@
 dependencies {
-
+    implementation project(':core:server:all-sql-base')
     implementation 'com.zaxxer:HikariCP:5.1.0'
-
 }
 

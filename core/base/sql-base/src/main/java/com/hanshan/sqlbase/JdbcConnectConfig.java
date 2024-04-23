@@ -1,6 +1,5 @@
 package com.hanshan.sqlbase;
 
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,18 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConnectionWrapper {
-    /**
-     * 数据源
-     */
-    private HikariDataSource dataSource;
-    /**
-     * 连接的数据库
-     */
+public class JdbcConnectConfig {
+    private String jdbcUrl;
+    private String driver;
+    private String username;
+    private String password;
+    private Integer maximumPoolSize = 5;
+    private Integer minimumIdle = 1;
     private String db;
-    /**
-     *
-     */
     private String schema;
-
 }
