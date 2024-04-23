@@ -14,6 +14,5 @@ public class ConnectQuery {
      * 数据库
      */
     private String db;
-
     private String schema;
 }
