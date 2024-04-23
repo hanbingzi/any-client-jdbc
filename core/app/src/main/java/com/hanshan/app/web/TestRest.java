@@ -1,7 +1,7 @@
 package com.hanshan.app.web;
 
-import com.hanshan.app.config.Mysql8Configuration;
 import com.hanshan.app.model.vo.TestVo;
+import com.hanshan.mysql8.config.Mysql8Configuration;
 import com.hanshan.sqlbase.ConnectionWrapper;
 import com.hanshan.sqlbase.DataSourceManager;
 import jakarta.annotation.Resource;
@@ -22,7 +22,7 @@ public class TestRest {
     @GetMapping("test1")
     public TestVo getTest1() {
         return TestVo.builder()
-                .id(1).name("test").age(23).sex("M").build();
+                .id(1).name("test").build();
     }
 
     @GetMapping("test2")

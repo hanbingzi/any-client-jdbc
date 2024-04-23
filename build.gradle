@@ -21,6 +21,7 @@ allprojects {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
+    apply plugin: 'io.spring.dependency-management'
 
     //    configurations {
 //        compileOnly {
@@ -29,8 +30,10 @@ subprojects {
 //    }
 
     //所有子模块的-依赖版本管理
+    //io.spring.dependency-management 插件提示依赖支持
     dependencyManagement {
         dependencies {
+            dependency 'org.projectlombok:lombok:1.18.32'
             //dependency "cn.hutool:hutool-all:5.0.7"
             //dependency "org.apache.commons:commons-lang3:3.5"
         }
@@ -38,7 +41,7 @@ subprojects {
 //子项目用的依赖
     dependencies {
         compileOnly 'org.projectlombok:lombok'
-//        annotationProcessor 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
     }
     tasks.named('test') {
         useJUnitPlatform()
