@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 public class Mysql8Configuration implements IJdbcConfigurationApi {
-    private String driver;
-    private String jdbcUrl;
-    private Boolean hasDatabase = false;
+    private String driver = "";
+    private String jdbcUrl = "";
+    private Boolean hasDatabase = true;
     private Boolean hasSchema = false;
     private Integer maximumPoolSize = 3;
     private Integer minimumIdle = 1;

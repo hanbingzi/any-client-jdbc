@@ -1,5 +1,6 @@
 package com.hanshan.api.result;
 
+import com.hanshan.common.types.ResponseEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,6 +47,14 @@ public class Result<T> {
         result.setSuccess(false);
         result.setCode(code);
         result.setMessage(message);
+        return result;
+    }
+
+    public static Result<Object> error(ResponseEnum response) {
+        Result<Object> result = new Result<>();
+        result.setSuccess(false);
+        result.setCode(response.code);
+        result.setMessage(response.message);
         return result;
     }
 }

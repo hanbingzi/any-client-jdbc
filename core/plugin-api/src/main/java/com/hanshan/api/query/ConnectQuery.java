@@ -9,6 +9,10 @@ public class ConnectQuery {
 
     private ServerInfo server;
     private ServerCluster[] cluster;
+    /**
+     * 传serverId，就不用传server
+     */
+    private String serverId;
     //  ssh?: SSHConfig;
     /**
      * 数据库

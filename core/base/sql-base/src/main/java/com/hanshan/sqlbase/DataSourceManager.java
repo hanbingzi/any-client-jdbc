@@ -40,7 +40,21 @@ public class DataSourceManager {
     }
 
     public static Result<Object> getConnection(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
-        String idKey = ConnectIdKey.getConnectKey(connectQuery);
+        try {
+            Result<Object> connectionWrapper = getConnectionWrap(connectQuery, configurationApi);
+            if (connectionWrapper.getSuccess() && connectionWrapper.getData() != null) {
+                HikariDataSource dataSource = (HikariDataSource) connectionWrapper.getData();
+                return Result.success(dataSource.getConnection());
+            }
+            return connectionWrapper;
+        } catch (SQLException e) {
+            return Result.error(e.getErrorCode(), e.getMessage());
+        }
+
+    }
+
+    public static Result<Object> getConnectionWrap(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+        String idKey = ConnectIdKey.getConnectIdKey(connectQuery);
         //ConnectionWrapper connectionWrapper = null;
         if (aliveConnection.containsKey(idKey)) {
             ConnectionWrapper connectionWrapper = aliveConnection.get(idKey);

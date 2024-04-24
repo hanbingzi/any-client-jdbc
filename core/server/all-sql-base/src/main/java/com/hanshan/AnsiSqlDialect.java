@@ -1,6 +1,6 @@
 package com.hanshan;
 
-public class AnsiSqlDialect {
+public class AnsiSqlDialect implements BaseSqlDialect {
 
 
 
