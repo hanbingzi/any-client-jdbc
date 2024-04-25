@@ -26,4 +26,15 @@ public class ControllerExceptionHandler {
     }
 
 
+    /**
+     * 放到最下面，所有错误都兼容
+     * @return
+     */
+    @ExceptionHandler(value = {Exception.class})
+    @ResponseBody
+    public Result ExceptionHandler() {
+        return Result.error(ResponseEnum.UNKNOWN_ERROR);
+    }
+
+
 }

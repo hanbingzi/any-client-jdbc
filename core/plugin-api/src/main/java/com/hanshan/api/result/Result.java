@@ -40,6 +40,8 @@ public class Result<T> {
     public static <R> Result<R> success(R data) {
         Result<R> result = new Result<>();
         result.setSuccess(true);
+        result.setCode(ResponseEnum.SUCCESS.code);
+        result.setMessage(ResponseEnum.SUCCESS.message);
         result.setData(data);
         return result;
     }

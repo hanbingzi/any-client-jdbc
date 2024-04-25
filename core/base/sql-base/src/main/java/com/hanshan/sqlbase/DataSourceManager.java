@@ -4,6 +4,7 @@ import com.hanshan.IJdbcConfigurationApi;
 import com.hanshan.api.model.ServerInfo;
 import com.hanshan.api.query.ConnectQuery;
 import com.hanshan.api.result.Result;
+import com.hanshan.common.types.ResponseEnum;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -48,7 +49,7 @@ public class DataSourceManager {
                 HikariDataSource dataSource = connectionWrapperResult.getData().getDataSource();
                 return Result.success(dataSource.getConnection());
             }
-            return  Result.error(connectionWrapperResult);
+            return Result.error(connectionWrapperResult);
         } catch (SQLException e) {
             return Result.error(e.getErrorCode(), e.getMessage());
         }
@@ -63,15 +64,15 @@ public class DataSourceManager {
             return Result.success(connectionWrapper);
         } else {
             JdbcConnectConfig jdbcConnectConfig = getJdbcConnectConfig(connectQuery, configurationApi);
-            Result<ConnectionWrapper> createResult = createConnection(connectQuery.getServer(),jdbcConnectConfig);
+            Result<ConnectionWrapper> createResult = createConnection(connectQuery.getServer(), jdbcConnectConfig);
             if (createResult.getSuccess()) {
-                aliveConnection.put(idKey,  createResult.getData());
+                aliveConnection.put(idKey, createResult.getData());
             }
             return createResult;
         }
     }
 
-    public static Result<Object> testConnect(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+    public static Result testConnect(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
         HikariDataSource dataSource = null;
         try {
             ServerInfo server = connectQuery.getServer();
@@ -87,8 +88,11 @@ public class DataSourceManager {
             dataSource = new HikariDataSource(hikariConfig);
             dataSource.getConnection().close();
             return Result.success();
-        } catch (SQLException e) {
-            return Result.error(e.getErrorCode(), e.getMessage());
+        } catch (Exception e) {
+            if (e instanceof SQLException se) {
+                return Result.error(se.getErrorCode(), se.getMessage());
+            }
+            return Result.error(ResponseEnum.UNKNOWN_ERROR.code, e.getMessage());
         } finally {
             if (dataSource != null) {
                 try {
@@ -109,9 +113,9 @@ public class DataSourceManager {
         JdbcConnectConfig jdbcConnectConfig = new JdbcConnectConfig();
         if (StringUtils.isNotEmpty(db)) {
             if (StringUtils.isNotEmpty(schema)) {
-                jdbcConnectConfig.setJdbcUrl(configurationApi.getSchemaUrl(server,db,schema));
+                jdbcConnectConfig.setJdbcUrl(configurationApi.getSchemaUrl(server, db, schema));
             } else {
-                jdbcConnectConfig.setJdbcUrl(configurationApi.getDbUrl(server,db));
+                jdbcConnectConfig.setJdbcUrl(configurationApi.getDbUrl(server, db));
             }
         } else {
             jdbcConnectConfig.setJdbcUrl(configurationApi.getServerUrl(server));
@@ -129,7 +133,7 @@ public class DataSourceManager {
      *
      * @return
      */
-    public static Result<ConnectionWrapper> createConnection(ServerInfo server,JdbcConnectConfig connectConfig) {
+    public static Result<ConnectionWrapper> createConnection(ServerInfo server, JdbcConnectConfig connectConfig) {
         ConnectionWrapper connectionWrapper = new ConnectionWrapper();
         connectionWrapper.setDb(connectConfig.getDb());
         connectionWrapper.setSchema(connectConfig.getSchema());
@@ -150,9 +154,11 @@ public class DataSourceManager {
             dataSource.getConnection().close();
             connectionWrapper.setDataSource(dataSource);
             return Result.success(connectionWrapper);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            return Result.error(e.getErrorCode(), e.getMessage());
+        } catch (Exception e) {
+            if (e instanceof SQLException se) {
+                return Result.error(se.getErrorCode(), se.getMessage());
+            }
+            return Result.error(ResponseEnum.UNKNOWN_ERROR.code, e.getMessage());
         }
     }
 

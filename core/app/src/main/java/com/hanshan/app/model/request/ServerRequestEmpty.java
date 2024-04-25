@@ -6,16 +6,14 @@ import com.hanshan.app.exception.NoServerException;
 import com.hanshan.app.exception.ParamErrorException;
 import com.hanshan.app.model.query.ServerQuery;
 import lombok.Data;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
+@Setter
 public class ServerRequestEmpty implements Serializable {
     private ConnectQuery connect;
-
-    public void setConnect(ConnectQuery connect) {
-        this.connect = connect;
-    }
 
     public ConnectQuery getConnect() throws ParamErrorException, NoServerException {
         if (this.connect.getServer() == null) {
