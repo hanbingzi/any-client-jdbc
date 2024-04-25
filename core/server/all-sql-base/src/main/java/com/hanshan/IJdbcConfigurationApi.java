@@ -1,14 +1,16 @@
 package com.hanshan;
 
+import com.hanshan.api.model.ServerInfo;
+
 public interface IJdbcConfigurationApi {
 
     String getDriver();
 
-    String getServerUrl();
+    String getServerUrl(ServerInfo server);
 
-    String getDbUrl();
+    String getDbUrl(ServerInfo server, String db);
 
-    String getSchemaUrl();
+    String getSchemaUrl(ServerInfo server, String db, String schema);
 
     Boolean hasDatabase();
 

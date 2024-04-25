@@ -31,6 +31,8 @@ public class Result<T> {
      */
     private T data;
 
+
+
     public static Result<Object> success() {
         return Result.builder().success(true).build();
     }
@@ -42,16 +44,25 @@ public class Result<T> {
         return result;
     }
 
-    public static Result<Object> error(Integer code, String message) {
-        Result<Object> result = new Result<>();
+
+    public static <T> Result<T> error(Integer code, String message) {
+        Result<T> result = new Result<>();
         result.setSuccess(false);
         result.setCode(code);
         result.setMessage(message);
         return result;
     }
 
-    public static Result<Object> error(ResponseEnum response) {
-        Result<Object> result = new Result<>();
+    public static <T> Result<T> error(ResponseEnum response) {
+        Result<T> result = new Result<>();
+        result.setSuccess(false);
+        result.setCode(response.code);
+        result.setMessage(response.message);
+        return result;
+    }
+
+    public static <T,S> Result<T> error(Result<S> response) {
+        Result<T> result = new Result<>();
         result.setSuccess(false);
         result.setCode(response.code);
         result.setMessage(response.message);

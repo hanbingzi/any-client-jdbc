@@ -7,6 +7,8 @@ import com.hanshan.sqlbase.SqlConnRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AllSqlService {
 
@@ -15,7 +17,7 @@ public class AllSqlService {
 
     //展示所有的库
 
-    public Result<Object> showDatabase(ConnectQuery connectQuery) {
+    public Result<List<String>> showDatabase(ConnectQuery connectQuery) {
         IJdbcConfigurationApi jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         return SqlConnRunner.showDatabase(connectQuery, jdbcConfigurationApi);
 

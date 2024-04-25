@@ -2,8 +2,6 @@ package com.hanshan.app.web;
 
 import com.hanshan.app.model.vo.TestVo;
 import com.hanshan.mysql8.config.Mysql8Configuration;
-import com.hanshan.sqlbase.ConnectionWrapper;
-import com.hanshan.sqlbase.DataSourceManager;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestRest {
     public static final Logger logger = LoggerFactory.getLogger(TestRest.class);
 
-    @Resource
-    private Mysql8Configuration mysql8Configuration;
 
     @GetMapping("test1")
     public TestVo getTest1() {
@@ -27,9 +23,9 @@ public class TestRest {
 
     @GetMapping("test2")
     public Object getTest2() {
-        logger.info(mysql8Configuration.getDriver());
-        logger.info(mysql8Configuration.getServerUrl());
-        logger.info(mysql8Configuration.getHasDatabase()+"");
+//        logger.info(mysql8Configuration.getDriver());
+//        logger.info(mysql8Configuration.getServerUrl());
+//        logger.info(mysql8Configuration.getHasDatabase() + "");
         return "";
     }
 }

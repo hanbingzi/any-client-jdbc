@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 public class JdbcConnectConfig {
     private String jdbcUrl;
     private String driver;
-    private String username;
-    private String password;
     private Integer maximumPoolSize = 5;
     private Integer minimumIdle = 1;
     private String db;

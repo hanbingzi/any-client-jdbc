@@ -1,11 +1,11 @@
-package com.hanshan.app.model.query;
+package com.hanshan.app.model.request;
 
 import com.hanshan.api.query.ConnectQuery;
 import lombok.Data;
 
 import java.io.Serializable;
+
 @Data
-public class Request<T> implements Serializable {
+public class ServerRequestEmpty implements Serializable {
     private ConnectQuery connect;
-    private T data;
 }

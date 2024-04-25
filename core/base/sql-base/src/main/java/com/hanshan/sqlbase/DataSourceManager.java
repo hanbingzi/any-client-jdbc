@@ -1,6 +1,7 @@
 package com.hanshan.sqlbase;
 
 import com.hanshan.IJdbcConfigurationApi;
+import com.hanshan.api.model.ServerInfo;
 import com.hanshan.api.query.ConnectQuery;
 import com.hanshan.api.result.Result;
 import com.zaxxer.hikari.HikariConfig;
@@ -9,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,21 +41,21 @@ public class DataSourceManager {
         }
     }
 
-    public static Result<Object> getConnection(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+    public static Result<Connection> getConnection(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
         try {
-            Result<Object> connectionWrapper = getConnectionWrap(connectQuery, configurationApi);
-            if (connectionWrapper.getSuccess() && connectionWrapper.getData() != null) {
-                HikariDataSource dataSource = (HikariDataSource) connectionWrapper.getData();
+            Result<ConnectionWrapper> connectionWrapperResult = getConnectionWrap(connectQuery, configurationApi);
+            if (connectionWrapperResult.getSuccess() && connectionWrapperResult.getData() != null) {
+                HikariDataSource dataSource = connectionWrapperResult.getData().getDataSource();
                 return Result.success(dataSource.getConnection());
             }
-            return connectionWrapper;
+            return  Result.error(connectionWrapperResult);
         } catch (SQLException e) {
             return Result.error(e.getErrorCode(), e.getMessage());
         }
 
     }
 
-    public static Result<Object> getConnectionWrap(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+    public static Result<ConnectionWrapper> getConnectionWrap(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
         String idKey = ConnectIdKey.getConnectIdKey(connectQuery);
         //ConnectionWrapper connectionWrapper = null;
         if (aliveConnection.containsKey(idKey)) {
@@ -61,9 +63,9 @@ public class DataSourceManager {
             return Result.success(connectionWrapper);
         } else {
             JdbcConnectConfig jdbcConnectConfig = getJdbcConnectConfig(connectQuery, configurationApi);
-            Result<Object> createResult = createConnection(jdbcConnectConfig);
+            Result<ConnectionWrapper> createResult = createConnection(connectQuery.getServer(),jdbcConnectConfig);
             if (createResult.getSuccess()) {
-                aliveConnection.put(idKey, (ConnectionWrapper) createResult.getData());
+                aliveConnection.put(idKey,  createResult.getData());
             }
             return createResult;
         }
@@ -72,14 +74,15 @@ public class DataSourceManager {
     public static Result<Object> testConnect(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
         HikariDataSource dataSource = null;
         try {
+            ServerInfo server = connectQuery.getServer();
             JdbcConnectConfig jdbcConnectConfig = getJdbcConnectConfig(connectQuery, configurationApi);
             HikariConfig hikariConfig = new HikariConfig();
             hikariConfig.setDriverClassName(jdbcConnectConfig.getDriver());
             // 4. 设置数据库连接 URL
             hikariConfig.setJdbcUrl(jdbcConnectConfig.getJdbcUrl());
             // 5. 设置数据库用户名和密码
-            hikariConfig.setUsername(jdbcConnectConfig.getUsername());
-            hikariConfig.setPassword(jdbcConnectConfig.getPassword());
+            hikariConfig.setUsername(server.getUser());
+            hikariConfig.setPassword(server.getPassword());
             // 7. 创建 HikariCP 数据源
             dataSource = new HikariDataSource(hikariConfig);
             dataSource.getConnection().close();
@@ -100,17 +103,18 @@ public class DataSourceManager {
 
     public static JdbcConnectConfig getJdbcConnectConfig(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
         // IConfigurationApi configurationApi = this.getServerConfigurationApi(connectQuery.getServer());
+        ServerInfo server = connectQuery.getServer();
         String db = connectQuery.getDb();
         String schema = connectQuery.getSchema();
         JdbcConnectConfig jdbcConnectConfig = new JdbcConnectConfig();
         if (StringUtils.isNotEmpty(db)) {
             if (StringUtils.isNotEmpty(schema)) {
-                jdbcConnectConfig.setJdbcUrl(configurationApi.getSchemaUrl());
+                jdbcConnectConfig.setJdbcUrl(configurationApi.getSchemaUrl(server,db,schema));
             } else {
-                jdbcConnectConfig.setJdbcUrl(configurationApi.getDbUrl());
+                jdbcConnectConfig.setJdbcUrl(configurationApi.getDbUrl(server,db));
             }
         } else {
-            jdbcConnectConfig.setJdbcUrl(configurationApi.getServerUrl());
+            jdbcConnectConfig.setJdbcUrl(configurationApi.getServerUrl(server));
         }
         jdbcConnectConfig.setDriver(configurationApi.getDriver());
         jdbcConnectConfig.setDb(db);
@@ -125,7 +129,7 @@ public class DataSourceManager {
      *
      * @return
      */
-    public static Result<Object> createConnection(JdbcConnectConfig connectConfig) {
+    public static Result<ConnectionWrapper> createConnection(ServerInfo server,JdbcConnectConfig connectConfig) {
         ConnectionWrapper connectionWrapper = new ConnectionWrapper();
         connectionWrapper.setDb(connectConfig.getDb());
         connectionWrapper.setSchema(connectConfig.getSchema());
@@ -136,8 +140,8 @@ public class DataSourceManager {
             // 4. 设置数据库连接 URL
             hikariConfig.setJdbcUrl(connectConfig.getJdbcUrl());
             // 5. 设置数据库用户名和密码
-            hikariConfig.setUsername(connectConfig.getUsername());
-            hikariConfig.setPassword(connectConfig.getPassword());
+            hikariConfig.setUsername(server.getUser());
+            hikariConfig.setPassword(server.getPassword());
             // 6. 设置 HikariCP 连接池属性
             hikariConfig.setMaximumPoolSize(connectConfig.getMaximumPoolSize());
             hikariConfig.setMinimumIdle(connectConfig.getMinimumIdle());
