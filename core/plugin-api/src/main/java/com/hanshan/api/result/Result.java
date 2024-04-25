@@ -34,7 +34,7 @@ public class Result<T> {
 
 
     public static Result<Object> success() {
-        return Result.builder().success(true).build();
+        return Result.builder().success(true).code(ResponseEnum.SUCCESS.code).build();
     }
 
     public static <R> Result<R> success(R data) {

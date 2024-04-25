@@ -1,5 +1,6 @@
 dependencies {
     implementation project(':core:plugin-api')
+    implementation project(':core:plugin-common')
     implementation project(':core:common')
     implementation project(':core:base:sql-base')
     implementation project(':core:server:all-sql-base')
