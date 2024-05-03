@@ -31,6 +31,7 @@ public class Result<T> {
      */
     private T data;
 
+    private Long costTime;
 
 
     public static Result<Object> success() {
@@ -63,8 +64,32 @@ public class Result<T> {
         return result;
     }
 
-    public static <T,S> Result<T> error(Result<S> response) {
+    public static <T, S> Result<T> error(Result<S> response) {
         Result<T> result = new Result<>();
+        result.setSuccess(false);
+        result.setCode(response.code);
+        result.setMessage(response.message);
+        return result;
+    }
+
+    public static <T> RunSqlResult<T> runSqlError(Integer code, String message) {
+        RunSqlResult<T> result = new RunSqlResult<>();
+        result.setSuccess(false);
+        result.setCode(code);
+        result.setMessage(message);
+        return result;
+    }
+
+    public static <T, S> RunSqlResult<T> runSqlError(Result<S> response) {
+        RunSqlResult<T> result = new RunSqlResult<>();
+        result.setSuccess(false);
+        result.setCode(response.getCode());
+        result.setMessage(response.getMessage());
+        return result;
+    }
+
+    public static <T, R> RunSqlResult<T> runSqlError(ResponseEnum response) {
+        RunSqlResult<T> result = new RunSqlResult<>();
         result.setSuccess(false);
         result.setCode(response.code);
         result.setMessage(response.message);

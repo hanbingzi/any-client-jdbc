@@ -16,8 +16,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SqlConnRunner {
-    public final static Logger logger = LoggerFactory.getLogger(SqlConnRunner.class);
+public class SqlMetaOperator {
+    public final static Logger logger = LoggerFactory.getLogger(SqlMetaOperator.class);
 
 
     public static Result testConnect(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi){
@@ -31,9 +31,7 @@ public class SqlConnRunner {
      * @return
      */
     public static Result<List<String>> showDatabase(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
-        if (StringUtils.isNotEmpty(connectQuery.getDb()) || StringUtils.isNotEmpty(connectQuery.getSchema())) {
-            return Result.error(ResponseEnum.PARAM_ERROR);
-        }
+
         Result<Connection> connectResult = DataSourceManager.getConnection(connectQuery, configurationApi);
         if (!connectResult.getSuccess()) {
             return Result.error(connectResult);
@@ -66,9 +64,7 @@ public class SqlConnRunner {
 
     //展示所有的schema
     public static Result<List<String>> showSchema(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
-        if (StringUtils.isEmpty(connectQuery.getDb())) {
-            return Result.error(ResponseEnum.PARAM_ERROR);
-        }
+
         Result<Connection> connectResult = DataSourceManager.getConnection(connectQuery, configurationApi);
         if (!connectResult.getSuccess()) {
             return Result.error(connectResult);
@@ -109,12 +105,6 @@ public class SqlConnRunner {
      * @return
      */
     public static Result<List<NameComment>> showTables(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi, SqlTableEnum tableEnum) {
-        if (StringUtils.isEmpty(connectQuery.getDb())) {
-            return Result.error(ResponseEnum.PARAM_ERROR);
-        }
-        if (configurationApi.hasSchema() && StringUtils.isEmpty(connectQuery.getSchema())) {
-            return Result.error(ResponseEnum.PARAM_ERROR);
-        }
         Result<Connection> connectResult = DataSourceManager.getConnection(connectQuery, configurationApi);
         if (!connectResult.getSuccess()) {
             return Result.error(connectResult);

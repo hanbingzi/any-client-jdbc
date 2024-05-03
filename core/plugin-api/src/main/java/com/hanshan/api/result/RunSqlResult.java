@@ -1,9 +1,16 @@
 package com.hanshan.api.result;
 
-import lombok.Data;
+import com.hanshan.api.model.ColumnMeta;
+import lombok.*;
 
+import java.util.List;
+
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class RunSqlResult<T, S> extends QueryResult<T> {
+//@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class RunSqlResult<T> extends Result<T> {
 
     /**
      * 执行的sql
@@ -20,9 +27,13 @@ public class RunSqlResult<T, S> extends QueryResult<T> {
     /**
      * sql查询的表格结构
      */
-    private S[] fields;
+    private List<ColumnMeta> fields;
+
     /**
      * 此处的列是从fields转换过来的，
+     * 或者从数据库查询来的
      */
-    private String[] columns;
+    private List<ColumnMeta> columns;
+
+
 }
