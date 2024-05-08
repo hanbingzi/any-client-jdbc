@@ -8,8 +8,8 @@ import java.util.List;
 
 @Data
 public class SqlQuery{
-
     private String sql;
+    private List<String> batchSql;
     private List<SqlPsParam> params;
 
 }

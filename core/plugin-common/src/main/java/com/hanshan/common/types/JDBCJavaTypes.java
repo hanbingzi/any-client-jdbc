@@ -1,4 +1,4 @@
-package com.hanshan.sqlbase.types;
+package com.hanshan.common.types;
 
 import java.util.List;
 

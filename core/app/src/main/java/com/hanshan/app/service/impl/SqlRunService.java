@@ -25,5 +25,20 @@ public class SqlRunService {
         return SqlExecutor.query(connectQuery, jdbcConfigurationApi, sqlQuery.getSql(), sqlQuery.getParams());
     }
 
+    public RunSqlResult exec(ConnectQuery connectQuery, SqlQuery sqlQuery) {
+        IJdbcConfigurationApi jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+        return SqlExecutor.execute(connectQuery, jdbcConfigurationApi, sqlQuery.getSql(), sqlQuery.getParams());
+    }
+
+    public RunSqlResult runSql(ConnectQuery connectQuery, SqlQuery sqlQuery) {
+        IJdbcConfigurationApi jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+        return SqlExecutor.runSql(connectQuery, jdbcConfigurationApi, sqlQuery.getSql(), sqlQuery.getParams());
+    }
+
+    public List<RunSqlResult> runBatch(ConnectQuery connectQuery, SqlQuery sqlQuery) {
+        IJdbcConfigurationApi jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+        return SqlExecutor.runBatch(connectQuery, jdbcConfigurationApi, sqlQuery.getBatchSql(), sqlQuery.getParams());
+    }
+
 
 }

@@ -1,7 +1,8 @@
 package com.hanshan.sqlbase.utils;
 
 import com.hanshan.api.model.ColumnMeta;
-import com.hanshan.sqlbase.types.JDBCJavaTypes;
+import com.hanshan.common.types.JDBCJavaTypes;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class ResultSetColumnUtils {
             ColumnMeta columnMeta = new ColumnMeta();
             columnMeta.setName(columnName);
             String label = columnName;
-            if(labelList.contains(label)){
+            if (labelList.contains(label)) {
                 int j = 1;
                 label = label + "(" + j + ")";
                 while (labelList.contains(label)) {
@@ -60,15 +61,19 @@ public class ResultSetColumnUtils {
             JDBCJavaTypes jdbcColumnType = JDBCJavaTypes.getTypeById(columnType);
             columnMeta.setDataType(jdbcColumnType.getName());
             //处理备注，
-            ColumnMeta extraMeta = getColumnMore(conn, dbName, schemaName, tableName, columnName);
-            columnMeta.setComment(extraMeta.getComment());
-            columnMeta.setDefaultValue(extraMeta.getDefaultValue());
-            //处理主键
-            if (!primaryMap.containsKey(tableName)) {
-                primaryMap.put(tableName,getTablePrimaryKeys(conn,dbName,schemaName,tableName) );
+            if (StringUtils.isNotEmpty(tableName)) {
+                ColumnMeta extraMeta = getColumnMore(conn, dbName, schemaName, tableName, columnName);
+                if (extraMeta != null) {
+                    columnMeta.setComment(extraMeta.getComment());
+                    columnMeta.setDefaultValue(extraMeta.getDefaultValue());
+                }
+                if (!primaryMap.containsKey(tableName)) {
+                    primaryMap.put(tableName, getTablePrimaryKeys(conn, dbName, schemaName, tableName));
+                }
+                List<String> tablePrimary = primaryMap.get(tableName);
+                columnMeta.setIsPrimary(tablePrimary.contains(columnName));
             }
-            List<String> tablePrimary = primaryMap.get(tableName);
-            columnMeta.setIsPrimary(tablePrimary.contains(columnName));
+            //处理主键
             columnMetaList.add(columnMeta);
         }
         return columnMetaList;

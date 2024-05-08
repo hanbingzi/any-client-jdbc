@@ -16,8 +16,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataSourceManager {
-    public final static Logger logger = LoggerFactory.getLogger(DataSourceManager.class);
+public class DataSourceFactory {
+    public final static Logger logger = LoggerFactory.getLogger(DataSourceFactory.class);
     private static final Map<String, ConnectionWrapper> aliveConnection = new HashMap<>();
 
     public static void removeConnection(String idKey) {

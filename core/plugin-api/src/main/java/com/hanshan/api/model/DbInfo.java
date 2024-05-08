@@ -6,10 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class NameComment {
-    private String name;
-    private String comment;
+@NoArgsConstructor
+@Builder
+public class DbInfo {
+
+    private String db;
+    private String schema;
 }
