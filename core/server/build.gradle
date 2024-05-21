@@ -1,6 +1,5 @@
 subprojects {
     dependencies {
-        implementation project(':core:plugin-api')
     }
 }
 

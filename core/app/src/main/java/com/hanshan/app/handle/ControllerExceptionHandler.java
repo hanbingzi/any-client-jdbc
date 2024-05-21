@@ -1,6 +1,6 @@
 package com.hanshan.app.handle;
 
-import com.hanshan.api.result.Result;
+import com.hanshan.common.pojo.result.Result;
 import com.hanshan.app.exception.NoServerException;
 import com.hanshan.app.exception.ParamErrorException;
 import com.hanshan.common.types.ResponseEnum;

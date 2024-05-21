@@ -1,9 +1,9 @@
 package com.hanshan.app.service.impl;
 
-import com.hanshan.IJdbcConfigurationApi;
-import com.hanshan.api.model.VFTSPInfo;
-import com.hanshan.api.query.ConnectQuery;
-import com.hanshan.api.result.Result;
+import com.hanshan.common.config.IJdbcConfiguration;
+import com.hanshan.common.pojo.model.VFTSPInfo;
+import com.hanshan.common.pojo.query.ConnectQuery;
+import com.hanshan.common.pojo.result.Result;
 import com.hanshan.common.types.ResponseEnum;
 import com.hanshan.sqlbase.ConnectIdKey;
 import com.hanshan.sqlbase.DataSourceFactory;
@@ -22,7 +22,7 @@ public class AllSqlBaseService {
     private SqlConfigService sqlConfigService;
 
    public Result testConnect( ConnectQuery connectQuery){
-       IJdbcConfigurationApi jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+       IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
        return SqlMetaOperator.testConnect(connectQuery,jdbcConfigurationApi);
    }
    public Result closeConnect(ConnectQuery connectQuery){
@@ -37,18 +37,18 @@ public class AllSqlBaseService {
 
     public Result<List<String>> showDatabase(ConnectQuery connectQuery) {
 
-        IJdbcConfigurationApi jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+        IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         return SqlMetaOperator.showDatabase(connectQuery, jdbcConfigurationApi);
     }
     //展示所有的schema
     public Result<List<String>> showSchema(ConnectQuery connectQuery) {
 
-        IJdbcConfigurationApi jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+        IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         return SqlMetaOperator.showSchema(connectQuery, jdbcConfigurationApi);
     }
     //展示所有的table
     public Result<List<VFTSPInfo>> showTables(ConnectQuery connectQuery) {
-        IJdbcConfigurationApi jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+        IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         if (jdbcConfigurationApi.hasSchema() && StringUtils.isEmpty(connectQuery.getSchema())) {
             return Result.error(ResponseEnum.PARAM_ERROR);
         }
@@ -56,7 +56,7 @@ public class AllSqlBaseService {
     }
     //展示所有的view
     public Result<List<VFTSPInfo>> showViews(ConnectQuery connectQuery) {
-        IJdbcConfigurationApi jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+        IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         if (jdbcConfigurationApi.hasSchema() && StringUtils.isEmpty(connectQuery.getSchema())) {
             return Result.error(ResponseEnum.PARAM_ERROR);
         }
@@ -66,7 +66,7 @@ public class AllSqlBaseService {
      * 展示所有的function
      */
     public Result<List<VFTSPInfo>> showFunctions(ConnectQuery connectQuery) {
-        IJdbcConfigurationApi jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+        IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         if (jdbcConfigurationApi.hasSchema() && StringUtils.isEmpty(connectQuery.getSchema())) {
             return Result.error(ResponseEnum.PARAM_ERROR);
         }
@@ -79,7 +79,7 @@ public class AllSqlBaseService {
      * @return
      */
     public Result<List<VFTSPInfo>> showProduces(ConnectQuery connectQuery) {
-        IJdbcConfigurationApi jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+        IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         if (jdbcConfigurationApi.hasSchema() && StringUtils.isEmpty(connectQuery.getSchema())) {
             return Result.error(ResponseEnum.PARAM_ERROR);
         }

@@ -1,14 +1,16 @@
 package com.hanshan.mysql8.config;
 
-import com.hanshan.IJdbcConfigurationApi;
-import com.hanshan.api.model.ServerInfo;
+import com.hanshan.common.config.IJdbcConfiguration;
+import com.hanshan.common.pojo.model.ServerInfo;
 import lombok.Data;
 
 @Data
-public class Mysql8Configuration implements IJdbcConfigurationApi {
+public class Mysql8Configuration implements IJdbcConfiguration {
     private String driver = "com.mysql.cj.jdbc.Driver";
     //private String jdbcUrl = "jdbc:mysql://localhost:3306/database";
     //private String jdbcUrl = "jdbc:mysql://";
+    private Boolean hasDatabaseUrl = true;
+    private Boolean hasSchemaUrl = false;
     private Boolean hasDatabase = true;
     private Boolean hasSchema = false;
     private Integer maximumPoolSize = 3;
@@ -37,6 +39,16 @@ public class Mysql8Configuration implements IJdbcConfigurationApi {
     }
 
     @Override
+    public Boolean hasDatabaseUrl() {
+        return this.hasDatabaseUrl;
+    }
+
+    @Override
+    public Boolean hasSchemaUrl() {
+        return this.hasSchemaUrl;
+    }
+
+    @Override
     public Boolean hasDatabase() {
         return this.hasDatabase;
     }
@@ -54,5 +66,10 @@ public class Mysql8Configuration implements IJdbcConfigurationApi {
     @Override
     public Integer getMinimumIdle() {
         return this.minimumIdle;
+    }
+
+    @Override
+    public String getDefaultSchema() {
+        return null;
     }
 }

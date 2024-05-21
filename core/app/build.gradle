@@ -1,11 +1,10 @@
 dependencies {
-    implementation project(':core:plugin-api')
     implementation project(':core:plugin-common')
     implementation project(':core:common')
     implementation project(':core:base:sql-base')
-    implementation project(':core:server:all-sql-base')
     implementation project(':core:server:mysql-base')
     implementation project(':core:server:server-mysql8')
+    implementation project(':core:server:server-mssql12')
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.zaxxer:HikariCP:5.1.0'
     compileOnly 'org.projectlombok:lombok'

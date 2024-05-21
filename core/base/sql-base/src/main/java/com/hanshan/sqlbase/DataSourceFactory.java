@@ -1,9 +1,9 @@
 package com.hanshan.sqlbase;
 
-import com.hanshan.IJdbcConfigurationApi;
-import com.hanshan.api.model.ServerInfo;
-import com.hanshan.api.query.ConnectQuery;
-import com.hanshan.api.result.Result;
+import com.hanshan.common.config.IJdbcConfiguration;
+import com.hanshan.common.pojo.model.ServerInfo;
+import com.hanshan.common.pojo.query.ConnectQuery;
+import com.hanshan.common.pojo.result.Result;
 import com.hanshan.common.types.ResponseEnum;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -42,7 +42,7 @@ public class DataSourceFactory {
         }
     }
 
-    public static Result<Connection> getConnection(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+    public static Result<Connection> getConnection(ConnectQuery connectQuery, IJdbcConfiguration configurationApi) {
         try {
             Result<ConnectionWrapper> connectionWrapperResult = getConnectionWrap(connectQuery, configurationApi);
             if (connectionWrapperResult.getSuccess() && connectionWrapperResult.getData() != null) {
@@ -56,7 +56,7 @@ public class DataSourceFactory {
 
     }
 
-    public static Result<ConnectionWrapper> getConnectionWrap(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+    public static Result<ConnectionWrapper> getConnectionWrap(ConnectQuery connectQuery, IJdbcConfiguration configurationApi) {
         String idKey = ConnectIdKey.getConnectIdKey(connectQuery);
         //ConnectionWrapper connectionWrapper = null;
         if (aliveConnection.containsKey(idKey)) {
@@ -72,7 +72,7 @@ public class DataSourceFactory {
         }
     }
 
-    public static Result testConnect(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+    public static Result testConnect(ConnectQuery connectQuery, IJdbcConfiguration configurationApi) {
         HikariDataSource dataSource = null;
         try {
             ServerInfo server = connectQuery.getServer();
@@ -89,8 +89,9 @@ public class DataSourceFactory {
             dataSource.getConnection().close();
             return Result.success();
         } catch (Exception e) {
-            if (e instanceof SQLException se) {
-                return Result.error(se.getErrorCode(), se.getMessage());
+            if (e instanceof SQLException ) {
+                SQLException se = (SQLException) e;
+                return Result.error( se.getErrorCode(), se.getMessage());
             }
             return Result.error(ResponseEnum.UNKNOWN_ERROR.code, e.getMessage());
         } finally {
@@ -105,14 +106,14 @@ public class DataSourceFactory {
 
     }
 
-    public static JdbcConnectConfig getJdbcConnectConfig(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+    public static JdbcConnectConfig getJdbcConnectConfig(ConnectQuery connectQuery, IJdbcConfiguration configurationApi) {
         // IConfigurationApi configurationApi = this.getServerConfigurationApi(connectQuery.getServer());
         ServerInfo server = connectQuery.getServer();
         String db = connectQuery.getDb();
         String schema = connectQuery.getSchema();
         JdbcConnectConfig jdbcConnectConfig = new JdbcConnectConfig();
         if (StringUtils.isNotEmpty(db)) {
-            if (StringUtils.isNotEmpty(schema)) {
+            if (StringUtils.isNotEmpty(schema) && configurationApi.hasSchemaUrl()) {
                 jdbcConnectConfig.setJdbcUrl(configurationApi.getSchemaUrl(server, db, schema));
             } else {
                 jdbcConnectConfig.setJdbcUrl(configurationApi.getDbUrl(server, db));
@@ -155,7 +156,8 @@ public class DataSourceFactory {
             connectionWrapper.setDataSource(dataSource);
             return Result.success(connectionWrapper);
         } catch (Exception e) {
-            if (e instanceof SQLException se) {
+            if (e instanceof SQLException ) {
+                SQLException se = (SQLException) e;
                 return Result.error(se.getErrorCode(), se.getMessage());
             }
             return Result.error(ResponseEnum.UNKNOWN_ERROR.code, e.getMessage());

@@ -30,15 +30,19 @@ public enum JDBCJavaTypes {
     _FLOAT("float", List.of(7)),
     _DOUBLE("double", List.of(8)),
     _BIGDECIMAL("bigDecimal", List.of(2, 3)),
-    _STRING("string", List.of(1, 12, -1)),
+    //
+    _STRING("string", List.of(1, 12, -1,-9)),
     _DATE("date", List.of(91)),
+    _YEAR("year", List.of(91)),
     _TIME("time", List.of(92)),
     _TIMESTAMP("timestamp", List.of(93)),
-    _BYTE_ARRAY("byteArray", List.of(-2, -3, -4)),
+    _BYTES("bytes", List.of(-2, -3, -4)),
     _BLOB("blob", List.of(2004)),
     _CLOB("clob", List.of(2005)),
     _URL("url", List.of(70)),
-    _OBJECT("object", List.of(2000, 1111));
+    _OBJECT("object", List.of(2000, 1111)),
+    // bit 0或者1 方便前端操作，在java中通常转换为布尔值
+    _BIT("bit", List.of(-7));
 
     private String name;
     private List<Integer> values;
@@ -62,7 +66,16 @@ public enum JDBCJavaTypes {
             if (type.values.contains(id))
                 return type;
         }
-        return _OBJECT;
+        return _STRING;
+    }
+
+    public static JDBCJavaTypes getType(Integer id,String name) {
+       //特殊类型的处理
+        // Mysql Year处理
+        if(name.equals("YEAR")){
+            return _YEAR;
+        }
+        return getTypeById(id);
     }
 
     public static JDBCJavaTypes getTypeByName(String name) {
@@ -70,7 +83,8 @@ public enum JDBCJavaTypes {
             if (type.name.equals(name))
                 return type;
         }
-        return _OBJECT;
+        return _STRING;
     }
+
 
 }

@@ -1,11 +1,10 @@
 package com.hanshan.app.model.request;
 
-import com.hanshan.api.query.ConnectQuery;
+import com.hanshan.common.pojo.query.ConnectQuery;
 import com.hanshan.app.AppContext;
 import com.hanshan.app.exception.NoServerException;
 import com.hanshan.app.exception.ParamErrorException;
 import com.hanshan.app.model.query.ServerQuery;
-import lombok.Data;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 

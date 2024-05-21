@@ -1,11 +1,12 @@
 package com.hanshan.app.web;
 
-import com.hanshan.api.model.ServerInfo;
-import com.hanshan.api.model.VFTSPInfo;
-import com.hanshan.api.query.ConnectQuery;
-import com.hanshan.api.query.SqlQuery;
-import com.hanshan.api.result.Result;
-import com.hanshan.api.result.RunSqlResult;
+import com.hanshan.common.pojo.model.ServerInfo;
+import com.hanshan.common.pojo.model.VFTSPInfo;
+import com.hanshan.common.pojo.query.BatchSqlQuery;
+import com.hanshan.common.pojo.query.ConnectQuery;
+import com.hanshan.common.pojo.query.SqlQuery;
+import com.hanshan.common.pojo.result.Result;
+import com.hanshan.common.pojo.result.RunSqlResult;
 import com.hanshan.app.AppContext;
 import com.hanshan.app.exception.NoServerException;
 import com.hanshan.app.exception.ParamErrorException;
@@ -65,33 +66,48 @@ public class JdbcSqlRest {
         return allSqlService.closeConnect(request);
     }
 
+    @PostMapping("tableQuery")
+    public RunSqlResult<List<Map<String, Object>>> tableQuery(@RequestBody ServerRequest<SqlQuery> request) throws ParamErrorException, NoServerException {
+        ConnectQuery connectQuery = request.getConnect();
+        return sqlRunService.tableQuery(connectQuery, request.getData());
+    }
+
     @PostMapping("query")
     public RunSqlResult<List<Map<String, Object>>> query(@RequestBody ServerRequest<SqlQuery> request) throws ParamErrorException, NoServerException {
         ConnectQuery connectQuery = request.getConnect();
+        SqlQuery sqlQuery = request.getData();
+        if (StringUtils.isEmpty(sqlQuery.getSql())) {
+            return Result.runSqlError(ResponseEnum.PARAM_ERROR);
+        }
         return sqlRunService.query(connectQuery, request.getData());
     }
 
     @PostMapping("exec")
     public RunSqlResult exec(@RequestBody ServerRequest<SqlQuery> request) throws ParamErrorException, NoServerException {
         ConnectQuery connectQuery = request.getConnect();
-        return sqlRunService.query(connectQuery, request.getData());
+        return sqlRunService.exec(connectQuery, request.getData());
+    }
+
+    @PostMapping("multiExec")
+    public List<RunSqlResult> multiExec(@RequestBody ServerRequest<BatchSqlQuery> request) throws ParamErrorException, NoServerException {
+        ConnectQuery connectQuery = request.getConnect();
+        return sqlRunService.multiExec(connectQuery, request.getData());
     }
 
     @PostMapping("runSql")
-    public RunSqlResult runSql(@RequestBody ServerRequest<SqlQuery> request) throws ParamErrorException, NoServerException {
+    public RunSqlResult runSql(@RequestBody ServerRequest<String> request) throws ParamErrorException, NoServerException {
         ConnectQuery connectQuery = request.getConnect();
-        SqlQuery sqlQuery = request.getData();
-        if (StringUtils.isEmpty(sqlQuery.getSql())) {
+        if (StringUtils.isEmpty(request.getData())) {
             return Result.runSqlError(ResponseEnum.PARAM_ERROR);
         }
-        return sqlRunService.query(connectQuery, sqlQuery);
+        return sqlRunService.runSql(connectQuery, request.getData());
     }
 
     @PostMapping("runBatch")
-    public Result<List<RunSqlResult>> runBatch(@RequestBody ServerRequest<SqlQuery> request) throws ParamErrorException, NoServerException {
+    public Result<List<RunSqlResult>> runBatch(@RequestBody ServerRequest<BatchSqlQuery> request) throws ParamErrorException, NoServerException {
         ConnectQuery connectQuery = request.getConnect();
-        SqlQuery sqlQuery = request.getData();
-        if (sqlQuery.getBatchSql().isEmpty()) {
+
+        if (request.getData().getBatchSql().isEmpty()) {
             return Result.runSqlError(ResponseEnum.PARAM_ERROR);
         }
         return Result.success(sqlRunService.runBatch(connectQuery, request.getData()));

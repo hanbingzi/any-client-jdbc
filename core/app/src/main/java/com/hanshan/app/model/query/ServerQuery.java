@@ -1,7 +1,7 @@
 package com.hanshan.app.model.query;
 
-import com.hanshan.api.model.ServerCluster;
-import com.hanshan.api.model.ServerInfo;
+import com.hanshan.common.pojo.model.ServerCluster;
+import com.hanshan.common.pojo.model.ServerInfo;
 import lombok.Data;
 
 @Data

@@ -1,6 +1,6 @@
 package com.hanshan.sqlbase.utils;
 
-import com.hanshan.api.param.SqlPsParam;
+import com.hanshan.common.pojo.param.SqlPsParam;
 
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
@@ -23,86 +23,85 @@ public class StatementUtils {
         String type = param.getType();
         Object value = param.getValue();
         JDBCType jdbcType = JDBCType.valueOf(type);
-        switch (jdbcType){
-            case BIT -> {
-
-            }
-            case TINYINT -> {
-            }
-            case SMALLINT -> {
-            }
-            case INTEGER -> {
-            }
-            case BIGINT -> {
-            }
-            case FLOAT -> {
-            }
-            case REAL -> {
-            }
-            case DOUBLE -> {
-            }
-            case NUMERIC -> {
-            }
-            case DECIMAL -> {
-            }
-            case CHAR -> {
-            }
-            case VARCHAR -> {
-            }
-            case LONGVARCHAR -> {
-            }
-            case DATE -> {
-            }
-            case TIME -> {
-            }
-            case TIMESTAMP -> {
-            }
-            case BINARY -> {
-            }
-            case VARBINARY -> {
-            }
-            case LONGVARBINARY -> {
-            }
-            case NULL -> {
-            }
-            case OTHER -> {
-            }
-            case JAVA_OBJECT -> {
-            }
-            case DISTINCT -> {
-            }
-            case STRUCT -> {
-            }
-            case ARRAY -> {
-            }
-            case BLOB -> {
-            }
-            case CLOB -> {
-            }
-            case REF -> {
-            }
-            case DATALINK -> {
-            }
-            case BOOLEAN -> {
-            }
-            case ROWID -> {
-            }
-            case NCHAR -> {
-            }
-            case NVARCHAR -> {
-            }
-            case LONGNVARCHAR -> {
-            }
-            case NCLOB -> {
-            }
-            case SQLXML -> {
-            }
-            case REF_CURSOR -> {
-            }
-            case TIME_WITH_TIMEZONE -> {
-            }
-            case TIMESTAMP_WITH_TIMEZONE -> {
-            }
+        switch (jdbcType) {
+            case BIT:
+                break;
+            case TINYINT:
+                break;
+            case SMALLINT:
+                break;
+            case INTEGER:
+                break;
+            case BIGINT:
+                break;
+            case FLOAT:
+                break;
+            case REAL:
+                break;
+            case DOUBLE:
+                break;
+            case NUMERIC:
+                break;
+            case DECIMAL:
+                break;
+            case CHAR:
+                break;
+            case VARCHAR:
+                break;
+            case LONGVARCHAR:
+                break;
+            case DATE:
+                break;
+            case TIME:
+                break;
+            case TIMESTAMP:
+                break;
+            case BINARY:
+                break;
+            case VARBINARY:
+                break;
+            case LONGVARBINARY:
+                break;
+            case NULL:
+                break;
+            case OTHER:
+                break;
+            case JAVA_OBJECT:
+                break;
+            case DISTINCT:
+                break;
+            case STRUCT:
+                break;
+            case ARRAY:
+                break;
+            case BLOB:
+                break;
+            case CLOB:
+                break;
+            case REF:
+                break;
+            case DATALINK:
+                break;
+            case BOOLEAN:
+                break;
+            case ROWID:
+                break;
+            case NCHAR:
+                break;
+            case NVARCHAR:
+                break;
+            case LONGNVARCHAR:
+                break;
+            case NCLOB:
+                break;
+            case SQLXML:
+                break;
+            case REF_CURSOR:
+                break;
+            case TIME_WITH_TIMEZONE:
+                break;
+            case TIMESTAMP_WITH_TIMEZONE:
+                break;
         }
 
     }

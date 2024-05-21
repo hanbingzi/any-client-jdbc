@@ -1,7 +1,7 @@
 package com.hanshan.sqlbase;
 
-import com.hanshan.api.model.ServerInfo;
-import com.hanshan.api.query.ConnectQuery;
+import com.hanshan.common.pojo.model.ServerInfo;
+import com.hanshan.common.pojo.query.ConnectQuery;
 import org.apache.commons.lang3.StringUtils;
 
 public class ConnectIdKey {

@@ -1,10 +1,11 @@
 package com.hanshan.sqlbase;
 
-import com.hanshan.IJdbcConfigurationApi;
-import com.hanshan.api.model.VFTSPInfo;
-import com.hanshan.api.query.ConnectQuery;
-import com.hanshan.api.result.Result;
+import com.hanshan.common.config.IJdbcConfiguration;
+import com.hanshan.common.pojo.model.VFTSPInfo;
+import com.hanshan.common.pojo.query.ConnectQuery;
+import com.hanshan.common.pojo.result.Result;
 import com.hanshan.sqlbase.types.SqlTableEnum;
+import com.hanshan.sqlbase.utils.SqlValueUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,9 +19,10 @@ public class SqlMetaOperator {
     public final static Logger logger = LoggerFactory.getLogger(SqlMetaOperator.class);
 
 
-    public static Result testConnect(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi){
-       return DataSourceFactory.testConnect(connectQuery,configurationApi);
+    public static Result testConnect(ConnectQuery connectQuery, IJdbcConfiguration configurationApi) {
+        return DataSourceFactory.testConnect(connectQuery, configurationApi);
     }
+
     /**
      * 展示所有的库
      *
@@ -28,7 +30,7 @@ public class SqlMetaOperator {
      * @param configurationApi
      * @return
      */
-    public static Result<List<String>> showDatabase(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+    public static Result<List<String>> showDatabase(ConnectQuery connectQuery, IJdbcConfiguration configurationApi) {
 
         Result<Connection> connectResult = DataSourceFactory.getConnection(connectQuery, configurationApi);
         if (!connectResult.getSuccess()) {
@@ -61,7 +63,7 @@ public class SqlMetaOperator {
     }
 
     //展示所有的schema
-    public static Result<List<String>> showSchema(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+    public static Result<List<String>> showSchema(ConnectQuery connectQuery, IJdbcConfiguration configurationApi) {
         Result<Connection> connectResult = DataSourceFactory.getConnection(connectQuery, configurationApi);
         if (!connectResult.getSuccess()) {
             return Result.error(connectResult);
@@ -101,7 +103,7 @@ public class SqlMetaOperator {
      * @param tableEnum
      * @return
      */
-    public static Result<List<VFTSPInfo>> showTables(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi, SqlTableEnum tableEnum) {
+    public static Result<List<VFTSPInfo>> showTables(ConnectQuery connectQuery, IJdbcConfiguration configurationApi, SqlTableEnum tableEnum) {
         Result<Connection> connectResult = DataSourceFactory.getConnection(connectQuery, configurationApi);
         if (!connectResult.getSuccess()) {
             return Result.error(connectResult);
@@ -141,7 +143,7 @@ public class SqlMetaOperator {
      * 展示所有的function
      */
 
-    public static Result<List<VFTSPInfo>> showFunctions(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+    public static Result<List<VFTSPInfo>> showFunctions(ConnectQuery connectQuery, IJdbcConfiguration configurationApi) {
         Result<Connection> connectResult = DataSourceFactory.getConnection(connectQuery, configurationApi);
         if (!connectResult.getSuccess()) {
             return Result.error(connectResult);
@@ -156,7 +158,7 @@ public class SqlMetaOperator {
             //logger.info("---showtables ==={}",resultSet.getMetaData());
             while (resultSet.next()) {
                 VFTSPInfo nameComment = new VFTSPInfo();
-                nameComment.setName(resultSet.getString("FUNCTION_NAME"));
+                nameComment.setName(SqlValueUtils.resolveVFTSPName(resultSet.getString("FUNCTION_NAME")));
                 nameComment.setComment(resultSet.getString("REMARKS"));
                 tables.add(nameComment);
             }
@@ -181,7 +183,7 @@ public class SqlMetaOperator {
 
     //展示所有的sequence
 
-    public static Result<List<VFTSPInfo>> showProcedures(ConnectQuery connectQuery, IJdbcConfigurationApi configurationApi) {
+    public static Result<List<VFTSPInfo>> showProcedures(ConnectQuery connectQuery, IJdbcConfiguration configurationApi) {
         Result<Connection> connectResult = DataSourceFactory.getConnection(connectQuery, configurationApi);
         if (!connectResult.getSuccess()) {
             return Result.error(connectResult);
@@ -196,8 +198,11 @@ public class SqlMetaOperator {
             //logger.info("---showtables ==={}",resultSet.getMetaData());
             while (resultSet.next()) {
                 VFTSPInfo nameComment = new VFTSPInfo();
-                nameComment.setName(resultSet.getString("PROCEDURE_NAME"));
-                nameComment.setComment(resultSet.getString("REMARKS"));
+                String procedureType = resultSet.getString("PROCEDURE_TYPE");
+                String procedureName = resultSet.getString("PROCEDURE_NAME");
+                String remarks = resultSet.getString("REMARKS");
+                nameComment.setName(SqlValueUtils.resolveVFTSPName(procedureName));
+                nameComment.setComment(remarks);
                 tables.add(nameComment);
             }
             return Result.success(tables);

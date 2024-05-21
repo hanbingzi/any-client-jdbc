@@ -1,0 +1,6 @@
+dependencies {
+    implementation project(':core:plugin-common')
+    implementation 'com.microsoft.sqlserver:mssql-jdbc:12.6.0.jre11'
+
+}
+
