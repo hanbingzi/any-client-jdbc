@@ -39,7 +39,7 @@ public class SqlExecutor {
             connection = connectResult.getData();
             SqlQueryParam sqlQueryParam = null;
             if (tableQuery) {
-                SqlQueryParam.getInstance(true, query, connectQuery.getDb(), connectQuery.getSchema(), configurationApi);
+                sqlQueryParam = SqlQueryParam.getInstance(true, query, connectQuery.getDb(), connectQuery.getSchema(), configurationApi);
             } else {
                 sqlQueryParam = SqlUtils.getSqlQuery(connectQuery, configurationApi, query);
             }
@@ -65,19 +65,21 @@ public class SqlExecutor {
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         String runSql = StringUtils.isNotEmpty(sql) ? sql : sqlQuery.getSql();
+        RunSqlResult<List<Map<String, Object>>> sqlResult = new RunSqlResult<>();
+        sqlResult.setIsQuery(true);
+        sqlResult.setSql(runSql);
         try {
             ps = conn.prepareStatement(runSql);
-            System.out.println("query runSql"+runSql);
+            System.out.println("query runSql" + runSql);
             resultSet = ps.executeQuery();
             //解析列
             List<ColumnMeta> columnMetas = ResultSetColumnUtils.getSqlResultColumns(conn, resultSet.getMetaData(), sqlQuery);
             List<Map<String, Object>> data = new ArrayList<>();
             while (resultSet.next()) {
                 Map<String, Object> dataItem = new LinkedHashMap<>();
-
                 for (int i = 1; i <= columnMetas.size(); i++) {
                     ColumnMeta meta = columnMetas.get(i - 1);
-                    String columnName = meta.getName();
+                    String columnLabel = meta.getLabel();
                     Object value;//= resultSet.getObject(i + 1);
                     //logger.info("name:{},dataType:{},typeName:{}", meta.getLabel(), meta.getDataType(), (value != null ? value.getClass().getTypeName() : ""));
                     //Object convertValue = SqlValueUtils.convertQueryValue(value, meta.getJdbcDataType());
@@ -147,32 +149,24 @@ public class SqlExecutor {
                             value = resultSet.getObject(i);
                             break;
                     }
-                    if (dataItem.containsKey(columnName)) {
-                        int j = 1;
-                        String renameColumn = columnName + "(" + j + ")";
-                        while (dataItem.containsKey(renameColumn)) {
-                            renameColumn = columnName + "(" + j + ")";
-                            j++;
-                        }
-                        dataItem.put(renameColumn, value);
-                    } else {
-                        dataItem.put(columnName, value);
-                    }
-
+                    dataItem.put(columnLabel, value);
                 }
                 data.add(dataItem);
             }
-            RunSqlResult<List<Map<String, Object>>> sqlResult = new RunSqlResult<>();
+
             sqlResult.setSuccess(true);
+            sqlResult.setMessage("success");
             sqlResult.setCode(ResponseEnum.SUCCESS.code);
-            sqlResult.setIsQuery(true);
-            sqlResult.setSql(sql);
+
             sqlResult.setColumns(columnMetas);
             sqlResult.setData(data);
             return sqlResult;
         } catch (SQLException e) {
             e.printStackTrace();
-            return Result.runSqlError(e.getErrorCode(), e.getMessage());
+            sqlResult.setMessage(e.getMessage());
+            sqlResult.setSuccess(false);
+            sqlResult.setCode(e.getErrorCode());
+            return sqlResult;
         } finally {
             try {
                 if (resultSet != null) {

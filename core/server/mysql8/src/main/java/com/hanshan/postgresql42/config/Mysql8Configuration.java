@@ -1,20 +1,21 @@
-package com.hanshan.mysql8.config;
+package com.hanshan.postgresql42.config;
 
 import com.hanshan.common.config.IJdbcConfiguration;
 import com.hanshan.common.pojo.model.ServerInfo;
 import lombok.Data;
 
 @Data
-public class Mssql12Configuration implements IJdbcConfiguration {
-    private String driver = "com.microsoft.sqlserver.jdbc.SQLServerDataSource";
-    //private String jdbcUrl = "jdbc:sqlserver://127.0.0.1:1433;databaseName=test"
+public class Mysql8Configuration implements IJdbcConfiguration {
+    private String driver = "com.mysql.cj.jdbc.Driver";
+    //private String jdbcUrl = "jdbc:mysql://localhost:3306/database";
+    //private String jdbcUrl = "jdbc:mysql://";
     private Boolean hasDatabaseUrl = true;
     private Boolean hasSchemaUrl = false;
     private Boolean hasDatabase = true;
-    private Boolean hasSchema = true;
-
-    private Integer maximumPoolSize = 3;
+    private Boolean hasSchema = false;
+    private Integer maximumPoolSize = 5;
     private Integer minimumIdle = 1;
+    private Long maxLifeTime = 10 * 60 * 1000L;
 
     @Override
     public String getDriver() {
@@ -23,13 +24,13 @@ public class Mssql12Configuration implements IJdbcConfiguration {
 
     @Override
     public String getServerUrl(ServerInfo server) {
-        String jdbcUrl = "jdbc:sqlserver://%s:%s;encrypt=false";
+        String jdbcUrl = "jdbc:mysql://%s:%s";
         return String.format(jdbcUrl, server.getHost(), server.getPort());
     }
 
     @Override
     public String getDbUrl(ServerInfo server, String db) {
-        String jdbcUrl = "jdbc:sqlserver://%s:%s;databaseName=%s;encrypt=false";
+        String jdbcUrl = "jdbc:mysql://%s:%s/%s";
         return String.format(jdbcUrl, server.getHost(), server.getPort(), db);
     }
 
@@ -69,7 +70,12 @@ public class Mssql12Configuration implements IJdbcConfiguration {
     }
 
     @Override
+    public Long getMaxLifeTime() {
+        return this.maxLifeTime;
+    }
+
+    @Override
     public String getDefaultSchema() {
-        return "dbo";
+        return null;
     }
 }

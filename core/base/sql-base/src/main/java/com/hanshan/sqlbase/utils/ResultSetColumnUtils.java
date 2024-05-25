@@ -42,18 +42,18 @@ public class ResultSetColumnUtils {
             String tableName = columnMeta.getTableName();
             //处理重复命名
             String columnName = columnMeta.getName();
-            String label = columnName;
-            if (labelList.contains(label)) {
+            String columnLabel = columnMeta.getLabel();
+            if (labelList.contains(columnLabel)) {
                 int j = 1;
-                label = label + "(" + j + ")";
-                while (labelList.contains(label)) {
-                    label = label + "(" + j + ")";
+                columnLabel = columnLabel + "(" + j + ")";
+                while (labelList.contains(columnLabel)) {
+                    columnLabel = columnLabel + "(" + j + ")";
                     j++;
                 }
-                columnMeta.setLabel(label);
+                columnMeta.setLabel(columnLabel);
             }
-            labelList.add(label);
-            if (sqlQuery.getAlyColumn()) {
+            labelList.add(columnLabel);
+            if (sqlQuery.getAlyColumn()!=null && sqlQuery.getAlyColumn()) {
                 //处理备注，
                 resolveOneColumnRemarkAndDef(columnMeta, conn, dbName, schemaName, tableName, columnName, sqlQuery.getConfig());
                if(StringUtils.isNotEmpty(tableName)) {
@@ -76,9 +76,10 @@ public class ResultSetColumnUtils {
         String schemaName = metaData.getSchemaName(index);
         String tableName = metaData.getTableName(index);
         String columnName = metaData.getColumnName(index);
+        String labelName = metaData.getColumnLabel(index);
         ColumnMeta columnMeta = new ColumnMeta();
         columnMeta.setName(columnName);
-        columnMeta.setLabel(columnName);
+        columnMeta.setLabel(labelName);
         //String className = metaData.getColumnClassName(i);
         columnMeta.setDbName(dbName);
         columnMeta.setSchemaName(schemaName);

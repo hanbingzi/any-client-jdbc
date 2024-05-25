@@ -54,7 +54,7 @@ public class JdbcSqlRest {
     @PostMapping("testConnect")
     public Result testConnect(@RequestBody ConnectQuery request) throws Exception {
         ServerInfo server = request.getServer();
-        if (!request.getOriginPassword()) {
+        if (request.getOriginPassword()==null || !request.getOriginPassword()) {
             server.setPassword(DecryptUtils.decryptData(server.getPassword()));
         }
         return allSqlService.testConnect(request);

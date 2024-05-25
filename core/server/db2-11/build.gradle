@@ -1,0 +1,9 @@
+dependencies {
+    implementation project(':core:plugin-common')
+    // https://mvnrepository.com/artifact/com.ibm.db2/jcc
+    implementation 'com.ibm.db2:jcc:11.5.8.0'
+
+
+
+}
+

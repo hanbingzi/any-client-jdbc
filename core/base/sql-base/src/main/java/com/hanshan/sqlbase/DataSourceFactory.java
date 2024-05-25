@@ -84,11 +84,15 @@ public class DataSourceFactory {
             // 5. 设置数据库用户名和密码
             hikariConfig.setUsername(server.getUser());
             hikariConfig.setPassword(server.getPassword());
+            hikariConfig.setMaximumPoolSize(jdbcConnectConfig.getMaximumPoolSize());
+            hikariConfig.setMinimumIdle(jdbcConnectConfig.getMinimumIdle());
+            hikariConfig.setMaxLifetime(jdbcConnectConfig.getMaxLifeTime());
             // 7. 创建 HikariCP 数据源
             dataSource = new HikariDataSource(hikariConfig);
             dataSource.getConnection().close();
             return Result.success();
         } catch (Exception e) {
+            e.printStackTrace();
             if (e instanceof SQLException ) {
                 SQLException se = (SQLException) e;
                 return Result.error( se.getErrorCode(), se.getMessage());
@@ -126,6 +130,7 @@ public class DataSourceFactory {
         jdbcConnectConfig.setSchema(schema);
         jdbcConnectConfig.setMaximumPoolSize(configurationApi.getMaximumPoolSize());
         jdbcConnectConfig.setMinimumIdle(configurationApi.getMinimumIdle());
+        jdbcConnectConfig.setMaxLifeTime(configurationApi.getMaxLifeTime());
         return jdbcConnectConfig;
     }
 

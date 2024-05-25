@@ -1,0 +1,7 @@
+dependencies {
+    implementation project(':core:plugin-common')
+    implementation 'org.postgresql:postgresql:42.7.3'
+
+
+}
+

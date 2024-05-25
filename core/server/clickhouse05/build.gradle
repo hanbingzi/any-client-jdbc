@@ -1,0 +1,10 @@
+dependencies {
+    implementation project(':core:plugin-common')
+    // https://mvnrepository.com/artifact/com.clickhouse/clickhouse-jdbc
+    implementation 'com.clickhouse:clickhouse-jdbc:0.5.0'
+
+
+
+
+}
+

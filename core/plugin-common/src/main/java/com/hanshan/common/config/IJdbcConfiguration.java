@@ -44,6 +44,8 @@ public interface IJdbcConfiguration {
 
     Integer getMinimumIdle();
 
+    Long getMaxLifeTime();
+
     String getDefaultSchema();
 
 

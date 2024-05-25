@@ -1,20 +1,22 @@
-package com.hanshan.mysql8.config;
+package com.hanshan.postgresql42.config;
 
 import com.hanshan.common.config.IJdbcConfiguration;
 import com.hanshan.common.pojo.model.ServerInfo;
 import lombok.Data;
 
 @Data
-public class Mysql8Configuration implements IJdbcConfiguration {
-    private String driver = "com.mysql.cj.jdbc.Driver";
-    //private String jdbcUrl = "jdbc:mysql://localhost:3306/database";
-    //private String jdbcUrl = "jdbc:mysql://";
+public class Postgresql42Configuration implements IJdbcConfiguration {
+    //com.microsoft.sqlserver.jdbc.SQLServerDriver
+    private String driver = "org.postgresql.Driver";
+    //private String jdbcUrl = "jdbc:sqlserver://127.0.0.1:1433;databaseName=test"
     private Boolean hasDatabaseUrl = true;
     private Boolean hasSchemaUrl = false;
     private Boolean hasDatabase = true;
-    private Boolean hasSchema = false;
+    private Boolean hasSchema = true;
+
     private Integer maximumPoolSize = 3;
     private Integer minimumIdle = 1;
+    private Long maxLifeTime = 10 * 60 * 1000L;
 
     @Override
     public String getDriver() {
@@ -23,13 +25,13 @@ public class Mysql8Configuration implements IJdbcConfiguration {
 
     @Override
     public String getServerUrl(ServerInfo server) {
-        String jdbcUrl = "jdbc:mysql://%s:%s";
+        String jdbcUrl = "jdbc::postgresql://%s:%s";
         return String.format(jdbcUrl, server.getHost(), server.getPort());
     }
 
     @Override
     public String getDbUrl(ServerInfo server, String db) {
-        String jdbcUrl = "jdbc:mysql://%s:%s/%s";
+        String jdbcUrl = "jdbc::postgresql://%s:%s/%s";
         return String.format(jdbcUrl, server.getHost(), server.getPort(), db);
     }
 
@@ -69,7 +71,13 @@ public class Mysql8Configuration implements IJdbcConfiguration {
     }
 
     @Override
+    public Long getMaxLifeTime() {
+        return this.maxLifeTime;
+    }
+
+
+    @Override
     public String getDefaultSchema() {
-        return null;
+        return "dbo";
     }
 }

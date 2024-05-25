@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -88,11 +90,13 @@ public class Result<T> {
         return result;
     }
 
-    public static <T, R> RunSqlResult<T> runSqlError(ResponseEnum response) {
+    public static <T> RunSqlResult<T> runSqlError(ResponseEnum response) {
         RunSqlResult<T> result = new RunSqlResult<>();
         result.setSuccess(false);
         result.setCode(response.code);
         result.setMessage(response.message);
         return result;
     }
+
+
 }
