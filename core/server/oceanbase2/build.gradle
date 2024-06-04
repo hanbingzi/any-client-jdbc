@@ -1,0 +1,7 @@
+dependencies {
+    implementation project(':core:plugin-common')
+    // https://mvnrepository.com/artifact/com.oceanbase/oceanbase-client
+    implementation 'com.oceanbase:oceanbase-client:2.4.10'
+
+}
+

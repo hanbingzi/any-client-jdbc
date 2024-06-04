@@ -20,6 +20,8 @@ public class ServerInfo {
 //     */
     private String instanceName;
     private String version;
+    private String database;
+    private String tenant;
 //    /**
 //     * 登录角色
 //     * oracle会用到

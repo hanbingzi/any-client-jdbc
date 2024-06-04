@@ -6,6 +6,7 @@ dependencies {
     implementation project(':core:server:server-clickhouse05')
     implementation project(':core:server:server-db2-11')
     implementation project(':core:server:server-mysql8')
+    implementation project(':core:server:server-oceanbase2')
     implementation project(':core:server:server-mssql12')
     implementation project(':core:server:server-postgresql42')
     implementation 'org.springframework.boot:spring-boot-starter-web'

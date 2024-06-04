@@ -244,20 +244,24 @@ public class SqlExecutor {
 
     public static RunSqlResult execute(Connection conn, String sql, List<SqlPsParam> psParams) {
         PreparedStatement ps = null;
+        RunSqlResult sqlResult = new RunSqlResult<>();
+        sqlResult.setIsQuery(false);
+        sqlResult.setSql(sql);
         try {
             ps = conn.prepareStatement(sql);
             Integer affectRow = ps.executeUpdate();
             //解析列
-            RunSqlResult sqlResult = new RunSqlResult<>();
             sqlResult.setSuccess(true);
             sqlResult.setCode(ResponseEnum.SUCCESS.code);
-            sqlResult.setIsQuery(false);
-            sqlResult.setSql(sql);
+
             sqlResult.setAffectedRows(affectRow);
+            sqlResult.setMessage("Affected Rows: "+affectRow);
             return sqlResult;
         } catch (SQLException e) {
             e.printStackTrace();
-            return Result.runSqlError(e.getErrorCode(), e.getMessage());
+            sqlResult.setCode(e.getErrorCode());
+            sqlResult.setMessage(e.getMessage());
+            return sqlResult;
         } finally {
             try {
                 if (ps != null) {

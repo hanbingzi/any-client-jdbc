@@ -1,0 +1,7 @@
+dependencies {
+    implementation project(':core:plugin-common')
+    // https://mvnrepository.com/artifact/org.apache.hive/hive-jdbc
+    implementation 'org.apache.hive:hive-jdbc:3.1.2'
+
+}
+

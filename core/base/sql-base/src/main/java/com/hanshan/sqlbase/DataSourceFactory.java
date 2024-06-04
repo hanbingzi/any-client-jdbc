@@ -4,6 +4,7 @@ import com.hanshan.common.config.IJdbcConfiguration;
 import com.hanshan.common.pojo.model.ServerInfo;
 import com.hanshan.common.pojo.query.ConnectQuery;
 import com.hanshan.common.pojo.result.Result;
+import com.hanshan.common.types.JdbcServerTypeEnum;
 import com.hanshan.common.types.ResponseEnum;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -47,6 +48,7 @@ public class DataSourceFactory {
             Result<ConnectionWrapper> connectionWrapperResult = getConnectionWrap(connectQuery, configurationApi);
             if (connectionWrapperResult.getSuccess() && connectionWrapperResult.getData() != null) {
                 HikariDataSource dataSource = connectionWrapperResult.getData().getDataSource();
+
                 return Result.success(dataSource.getConnection());
             }
             return Result.error(connectionWrapperResult);
@@ -82,7 +84,7 @@ public class DataSourceFactory {
             // 4. 设置数据库连接 URL
             hikariConfig.setJdbcUrl(jdbcConnectConfig.getJdbcUrl());
             // 5. 设置数据库用户名和密码
-            hikariConfig.setUsername(server.getUser());
+            hikariConfig.setUsername(getUsername(server));
             hikariConfig.setPassword(server.getPassword());
             hikariConfig.setMaximumPoolSize(jdbcConnectConfig.getMaximumPoolSize());
             hikariConfig.setMinimumIdle(jdbcConnectConfig.getMinimumIdle());
@@ -93,9 +95,9 @@ public class DataSourceFactory {
             return Result.success();
         } catch (Exception e) {
             e.printStackTrace();
-            if (e instanceof SQLException ) {
+            if (e instanceof SQLException) {
                 SQLException se = (SQLException) e;
-                return Result.error( se.getErrorCode(), se.getMessage());
+                return Result.error(se.getErrorCode(), se.getMessage());
             }
             return Result.error(ResponseEnum.UNKNOWN_ERROR.code, e.getMessage());
         } finally {
@@ -108,6 +110,17 @@ public class DataSourceFactory {
             }
         }
 
+    }
+
+    //oceanbase 连接说明：https://www.oceanbase.com/docs/common-oceanbase-database-cn-1000000000640068
+    public static String getUsername(ServerInfo server) {
+        String serverType = server.getServerType();
+        if (JdbcServerTypeEnum.OceanBase.name().equals(serverType)) {
+            if (StringUtils.isNotEmpty(server.getTenant())) {
+                return server.getUser() + "@" + server.getTenant();
+            }
+        }
+        return server.getUser();
     }
 
     public static JdbcConnectConfig getJdbcConnectConfig(ConnectQuery connectQuery, IJdbcConfiguration configurationApi) {
@@ -161,7 +174,7 @@ public class DataSourceFactory {
             connectionWrapper.setDataSource(dataSource);
             return Result.success(connectionWrapper);
         } catch (Exception e) {
-            if (e instanceof SQLException ) {
+            if (e instanceof SQLException) {
                 SQLException se = (SQLException) e;
                 return Result.error(se.getErrorCode(), se.getMessage());
             }

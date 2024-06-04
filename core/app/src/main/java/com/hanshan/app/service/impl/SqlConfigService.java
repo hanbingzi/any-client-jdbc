@@ -1,15 +1,16 @@
 package com.hanshan.app.service.impl;
 
 import com.hanshan.app.service.ISqlConfigService;
+import com.hanshan.clickhouse05.config.ClickHouse05Configuration;
 import com.hanshan.common.config.IJdbcConfiguration;
 import com.hanshan.common.dialect.AnsiSqlDialect;
 import com.hanshan.common.dialect.BaseSqlDialect;
 import com.hanshan.common.pojo.model.ServerInfo;
 import com.hanshan.common.types.JdbcServerTypeEnum;
-import com.hanshan.db211.config.ClickHouse05Configuration;
 import com.hanshan.db211.config.DB211Configuration;
 import com.hanshan.dialect.MysqlDialect;
 import com.hanshan.mssql12.config.Mssql12Configuration;
+import com.hanshan.oceanbase2.config.Oceanbase2Configuration;
 import com.hanshan.postgresql42.config.Mysql8Configuration;
 import com.hanshan.postgresql42.config.Postgresql42Configuration;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ public class SqlConfigService implements ISqlConfigService {
     private final static Postgresql42Configuration postgresql42Configuration = new Postgresql42Configuration();
     private final static DB211Configuration db211Configuration = new DB211Configuration();
     private final static ClickHouse05Configuration clickHouse05Configuration = new ClickHouse05Configuration();
+    private final static Oceanbase2Configuration oceanbase2Configuration = new Oceanbase2Configuration();
     private final static AnsiSqlDialect ansiSqlDialect = new AnsiSqlDialect();
     private final static MysqlDialect mysqlDialect = new MysqlDialect();
 
@@ -35,6 +37,7 @@ public class SqlConfigService implements ISqlConfigService {
         JdbcServerTypeEnum serverTypeEnum = JdbcServerTypeEnum.valueOf(serverType);
         //1.先判断server，然后判断version
         switch (serverTypeEnum) {
+            case TiDB:
             case Mysql:
                 return mysql8Configuration;
             case Postgresql:
@@ -43,6 +46,8 @@ public class SqlConfigService implements ISqlConfigService {
                 return mssql12Configuration;
             case DB2:
                 return db211Configuration;
+            case OceanBase:
+                return oceanbase2Configuration;
             case RDJC:
                 break;
             case H2:

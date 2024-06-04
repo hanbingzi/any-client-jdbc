@@ -1,12 +1,12 @@
-package com.hanshan.db211.config;
+package com.hanshan.clickhouse05.config;
 
 import com.hanshan.common.config.IJdbcConfiguration;
 import com.hanshan.common.pojo.model.ServerInfo;
 import lombok.Data;
 
 @Data
-public class ClickHouse05Configuration implements IJdbcConfiguration {
-    private String driver = "ru.yandex.clickhouse.ClickHouseDriver";
+public class Hive3Configuration implements IJdbcConfiguration {
+    private String driver = "com.clickhouse.jdbc.ClickHouseDriver";
     //private String jdbcUrl = "jdbc:sqlserver://127.0.0.1:1433;databaseName=test"
     private Boolean hasDatabaseUrl = true;
     private Boolean hasSchemaUrl = false;
@@ -22,6 +22,7 @@ public class ClickHouse05Configuration implements IJdbcConfiguration {
         return this.driver;
     }
     //jdbc:clickhouse://localhost:8123/default
+    //jdbc:clickhouse://server1:8123,server2:8123,server3:8123/database
     @Override
     public String getServerUrl(ServerInfo server) {
         String jdbcUrl = "jdbc:clickhouse://%s:%s";
