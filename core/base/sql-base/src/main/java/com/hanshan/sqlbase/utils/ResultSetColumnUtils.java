@@ -72,18 +72,15 @@ public class ResultSetColumnUtils {
     }
 
     public static ColumnMeta resolveColumn(ResultSetMetaData metaData, Integer index) throws SQLException {
-        String dbName = metaData.getCatalogName(index);
-        String schemaName = metaData.getSchemaName(index);
-        String tableName = metaData.getTableName(index);
+
         String columnName = metaData.getColumnName(index);
         String labelName = metaData.getColumnLabel(index);
+        // 有的server会返回表名 比如test.column
+
         ColumnMeta columnMeta = new ColumnMeta();
-        columnMeta.setName(columnName);
-        columnMeta.setLabel(labelName);
+        columnMeta.setName(dealColumnName(columnName));
+        columnMeta.setLabel(dealColumnName(labelName));
         //String className = metaData.getColumnClassName(i);
-        columnMeta.setDbName(dbName);
-        columnMeta.setSchemaName(schemaName);
-        columnMeta.setTableName(tableName);
         //Integer columnDisplaySize = metaData.getColumnDisplaySize(i);
         String columnTypeName = metaData.getColumnTypeName(index);
         columnMeta.setColumnType(columnTypeName);
@@ -95,10 +92,31 @@ public class ResultSetColumnUtils {
         JDBCJavaTypes jdbcColumnType = JDBCJavaTypes.getType(columnType, columnTypeName);
         columnMeta.setDataType(jdbcColumnType.getName());
         columnMeta.setJdbcDataType(jdbcColumnType);
+        try{
+            String dbName = metaData.getCatalogName(index);
+            String schemaName = metaData.getSchemaName(index);
+            String tableName = metaData.getTableName(index);
+            columnMeta.setDbName(dbName);
+            columnMeta.setSchemaName(schemaName);
+            columnMeta.setTableName(tableName);
+        }catch (Exception e){
+           //个别
+            logger.warn(columnName+"no implement db and schema");
+        }
         logger.info("columnName:{},dataType:{},columnTypeName:{},columnTypeId:{}",
                 columnName, jdbcColumnType.getName(), columnTypeName, columnType);
         return columnMeta;
     }
+
+    public static String dealColumnName(String input) {
+        if (input.contains(".")) {
+            int dotIndex = input.lastIndexOf(".");
+            return input.substring(dotIndex + 1);
+        } else {
+            return input;
+        }
+    }
+
 
     public static void resolveDbAndSchemaAndTable(ColumnMeta meta, SqlQueryParam sqlQuery) {
         if (sqlQuery != null && sqlQuery.getIsSingleTable()) {
@@ -131,7 +149,6 @@ public class ResultSetColumnUtils {
 //    }
 
     public static List<String> getTablePrimaryKeys(Connection conn, String db, String schema, String table, IJdbcConfiguration config) throws SQLException {
-
         List<String> primaryList = new ArrayList<>();
         if (config.hasDatabase() && StringUtils.isEmpty(db)) {
             return primaryList;
@@ -141,7 +158,10 @@ public class ResultSetColumnUtils {
             return primaryList;
         }
         DatabaseMetaData dbMetaData = conn.getMetaData();
+        //hive schema必须设置为db，是否影响其他数据库，测试中
+        if(StringUtils.isEmpty(schema)) schema = db;
         ResultSet primaryResultSet = dbMetaData.getPrimaryKeys(db, schema, table);
+        //ResultSet primaryResultSet = dbMetaData.getPrimaryKeys(db, db, table);
         while (primaryResultSet.next()) {
             primaryList.add(resolvePrimaryKey(primaryResultSet));
         }

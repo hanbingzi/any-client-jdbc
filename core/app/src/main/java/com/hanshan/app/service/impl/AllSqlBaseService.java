@@ -21,7 +21,7 @@ public class AllSqlBaseService {
     @Autowired
     private SqlConfigService sqlConfigService;
 
-   public Result testConnect( ConnectQuery connectQuery){
+   public Result testConnect( ConnectQuery connectQuery) throws Exception {
        IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
        return SqlMetaOperator.testConnect(connectQuery,jdbcConfigurationApi);
    }
@@ -35,19 +35,19 @@ public class AllSqlBaseService {
 
     //展示所有的库
 
-    public Result<List<String>> showDatabase(ConnectQuery connectQuery) {
+    public Result<List<String>> showDatabase(ConnectQuery connectQuery) throws Exception {
 
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         return SqlMetaOperator.showDatabase(connectQuery, jdbcConfigurationApi);
     }
     //展示所有的schema
-    public Result<List<String>> showSchema(ConnectQuery connectQuery) {
+    public Result<List<String>> showSchema(ConnectQuery connectQuery) throws Exception {
 
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         return SqlMetaOperator.showSchema(connectQuery, jdbcConfigurationApi);
     }
     //展示所有的table
-    public Result<List<VFTSPInfo>> showTables(ConnectQuery connectQuery) {
+    public Result<List<VFTSPInfo>> showTables(ConnectQuery connectQuery) throws Exception {
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         if (jdbcConfigurationApi.hasSchema() && StringUtils.isEmpty(connectQuery.getSchema())) {
             return Result.error(ResponseEnum.PARAM_ERROR);
@@ -55,7 +55,7 @@ public class AllSqlBaseService {
         return SqlMetaOperator.showTables(connectQuery, jdbcConfigurationApi, SqlTableEnum.TABLE);
     }
     //展示所有的view
-    public Result<List<VFTSPInfo>> showViews(ConnectQuery connectQuery) {
+    public Result<List<VFTSPInfo>> showViews(ConnectQuery connectQuery) throws Exception {
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         if (jdbcConfigurationApi.hasSchema() && StringUtils.isEmpty(connectQuery.getSchema())) {
             return Result.error(ResponseEnum.PARAM_ERROR);
@@ -65,7 +65,7 @@ public class AllSqlBaseService {
     /**
      * 展示所有的function
      */
-    public Result<List<VFTSPInfo>> showFunctions(ConnectQuery connectQuery) {
+    public Result<List<VFTSPInfo>> showFunctions(ConnectQuery connectQuery) throws Exception {
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         if (jdbcConfigurationApi.hasSchema() && StringUtils.isEmpty(connectQuery.getSchema())) {
             return Result.error(ResponseEnum.PARAM_ERROR);
@@ -78,7 +78,7 @@ public class AllSqlBaseService {
      * @param connectQuery
      * @return
      */
-    public Result<List<VFTSPInfo>> showProduces(ConnectQuery connectQuery) {
+    public Result<List<VFTSPInfo>> showProduces(ConnectQuery connectQuery) throws Exception {
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         if (jdbcConfigurationApi.hasSchema() && StringUtils.isEmpty(connectQuery.getSchema())) {
             return Result.error(ResponseEnum.PARAM_ERROR);

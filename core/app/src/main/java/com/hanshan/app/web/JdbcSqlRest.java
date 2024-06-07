@@ -67,13 +67,13 @@ public class JdbcSqlRest {
     }
 
     @PostMapping("tableQuery")
-    public RunSqlResult<List<Map<String, Object>>> tableQuery(@RequestBody ServerRequest<SqlQuery> request) throws ParamErrorException, NoServerException {
+    public RunSqlResult<List<Map<String, Object>>> tableQuery(@RequestBody ServerRequest<SqlQuery> request) throws Exception{
         ConnectQuery connectQuery = request.getConnect();
         return sqlRunService.tableQuery(connectQuery, request.getData());
     }
 
     @PostMapping("query")
-    public RunSqlResult<List<Map<String, Object>>> query(@RequestBody ServerRequest<SqlQuery> request) throws ParamErrorException, NoServerException {
+    public RunSqlResult<List<Map<String, Object>>> query(@RequestBody ServerRequest<SqlQuery> request) throws Exception {
         ConnectQuery connectQuery = request.getConnect();
         SqlQuery sqlQuery = request.getData();
         if (StringUtils.isEmpty(sqlQuery.getSql())) {
@@ -83,19 +83,19 @@ public class JdbcSqlRest {
     }
 
     @PostMapping("exec")
-    public RunSqlResult exec(@RequestBody ServerRequest<SqlQuery> request) throws ParamErrorException, NoServerException {
+    public RunSqlResult exec(@RequestBody ServerRequest<SqlQuery> request) throws Exception {
         ConnectQuery connectQuery = request.getConnect();
         return sqlRunService.exec(connectQuery, request.getData());
     }
 
     @PostMapping("multiExec")
-    public List<RunSqlResult> multiExec(@RequestBody ServerRequest<BatchSqlQuery> request) throws ParamErrorException, NoServerException {
+    public List<RunSqlResult> multiExec(@RequestBody ServerRequest<BatchSqlQuery> request) throws Exception {
         ConnectQuery connectQuery = request.getConnect();
         return sqlRunService.multiExec(connectQuery, request.getData());
     }
 
     @PostMapping("runSql")
-    public RunSqlResult runSql(@RequestBody ServerRequest<String> request) throws ParamErrorException, NoServerException {
+    public RunSqlResult runSql(@RequestBody ServerRequest<String> request) throws Exception {
         ConnectQuery connectQuery = request.getConnect();
         if (StringUtils.isEmpty(request.getData())) {
             return Result.runSqlError(ResponseEnum.PARAM_ERROR);
@@ -104,7 +104,7 @@ public class JdbcSqlRest {
     }
 
     @PostMapping("runBatch")
-    public Result<List<RunSqlResult>> runBatch(@RequestBody ServerRequest<BatchSqlQuery> request) throws ParamErrorException, NoServerException {
+    public Result<List<RunSqlResult>> runBatch(@RequestBody ServerRequest<BatchSqlQuery> request) throws Exception {
         ConnectQuery connectQuery = request.getConnect();
 
         if (request.getData().getBatchSql().isEmpty()) {
@@ -114,7 +114,7 @@ public class JdbcSqlRest {
     }
 
     @PostMapping("showDatabases")
-    public Result<List<String>> showDatabase(@RequestBody ServerRequestEmpty request) throws ParamErrorException, NoServerException {
+    public Result<List<String>> showDatabase(@RequestBody ServerRequestEmpty request) throws Exception {
         ConnectQuery connectQuery = request.getConnect();
         if (StringUtils.isNotEmpty(connectQuery.getDb()) || StringUtils.isNotEmpty(connectQuery.getSchema())) {
             return Result.error(ResponseEnum.PARAM_ERROR);
@@ -123,7 +123,7 @@ public class JdbcSqlRest {
     }
 
     @PostMapping("showSchemas")
-    public Result<List<String>> showSchema(@RequestBody ServerRequestEmpty request) throws ParamErrorException, NoServerException {
+    public Result<List<String>> showSchema(@RequestBody ServerRequestEmpty request) throws Exception {
         ConnectQuery connectQuery = request.getConnect();
         if (StringUtils.isEmpty(connectQuery.getDb())) {
             return Result.error(ResponseEnum.PARAM_ERROR);
@@ -132,7 +132,7 @@ public class JdbcSqlRest {
     }
 
     @PostMapping("showTables")
-    public Result<List<VFTSPInfo>> showTables(@RequestBody ServerRequestEmpty request) throws ParamErrorException, NoServerException {
+    public Result<List<VFTSPInfo>> showTables(@RequestBody ServerRequestEmpty request) throws Exception {
         ConnectQuery connectQuery = request.getConnect();
         if (StringUtils.isEmpty(connectQuery.getDb())) {
             return Result.error(ResponseEnum.PARAM_ERROR);
@@ -141,17 +141,17 @@ public class JdbcSqlRest {
     }
 
     @PostMapping("showViews")
-    public Result<List<VFTSPInfo>> showViews(@RequestBody ServerRequestEmpty request) throws ParamErrorException, NoServerException {
+    public Result<List<VFTSPInfo>> showViews(@RequestBody ServerRequestEmpty request) throws Exception {
         return allSqlService.showViews(request.getConnect());
     }
 
     @PostMapping("showFunctions")
-    public Result<List<VFTSPInfo>> showFunctions(@RequestBody ServerRequestEmpty request) throws ParamErrorException, NoServerException {
+    public Result<List<VFTSPInfo>> showFunctions(@RequestBody ServerRequestEmpty request) throws Exception {
         return allSqlService.showFunctions(request.getConnect());
     }
 
     @PostMapping("showProcedures")
-    public Result<List<VFTSPInfo>> showProcedures(@RequestBody ServerRequestEmpty request) throws ParamErrorException, NoServerException {
+    public Result<List<VFTSPInfo>> showProcedures(@RequestBody ServerRequestEmpty request) throws Exception {
         return allSqlService.showProduces(request.getConnect());
     }
 

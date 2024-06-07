@@ -1,5 +1,6 @@
 package com.hanshan.app.service.impl;
 
+import com.hanshan.app.exception.ParamErrorException;
 import com.hanshan.app.service.ISqlConfigService;
 import com.hanshan.clickhouse05.config.ClickHouse05Configuration;
 import com.hanshan.common.config.IJdbcConfiguration;
@@ -9,6 +10,7 @@ import com.hanshan.common.pojo.model.ServerInfo;
 import com.hanshan.common.types.JdbcServerTypeEnum;
 import com.hanshan.db211.config.DB211Configuration;
 import com.hanshan.dialect.MysqlDialect;
+import com.hanshan.hive3.config.Hive3Configuration;
 import com.hanshan.mssql12.config.Mssql12Configuration;
 import com.hanshan.oceanbase2.config.Oceanbase2Configuration;
 import com.hanshan.postgresql42.config.Mysql8Configuration;
@@ -28,10 +30,11 @@ public class SqlConfigService implements ISqlConfigService {
     private final static DB211Configuration db211Configuration = new DB211Configuration();
     private final static ClickHouse05Configuration clickHouse05Configuration = new ClickHouse05Configuration();
     private final static Oceanbase2Configuration oceanbase2Configuration = new Oceanbase2Configuration();
+    private final static Hive3Configuration hive3Configuration = new Hive3Configuration();
     private final static AnsiSqlDialect ansiSqlDialect = new AnsiSqlDialect();
     private final static MysqlDialect mysqlDialect = new MysqlDialect();
 
-    public IJdbcConfiguration getServerConfigurationApi(ServerInfo server) {
+    public IJdbcConfiguration getServerConfigurationApi(ServerInfo server) throws Exception {
         String serverType = server.getServerType();
         String version = server.getVersion();
         JdbcServerTypeEnum serverTypeEnum = JdbcServerTypeEnum.valueOf(serverType);
@@ -53,7 +56,7 @@ public class SqlConfigService implements ISqlConfigService {
             case H2:
                 break;
             case Hive:
-                break;
+                return hive3Configuration;
             case FileMaker:
                 break;
             case Teradata:
@@ -89,7 +92,8 @@ public class SqlConfigService implements ISqlConfigService {
             default:
                 logger.error("server not find");
         }
-        return null;
+        throw new ParamErrorException();
+
     }
 
     public BaseSqlDialect getSqlDialect(ServerInfo server) {

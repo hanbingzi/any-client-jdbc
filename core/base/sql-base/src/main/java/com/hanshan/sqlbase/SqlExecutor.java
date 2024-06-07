@@ -259,6 +259,7 @@ public class SqlExecutor {
             return sqlResult;
         } catch (SQLException e) {
             e.printStackTrace();
+            sqlResult.setSuccess(false);
             sqlResult.setCode(e.getErrorCode());
             sqlResult.setMessage(e.getMessage());
             return sqlResult;

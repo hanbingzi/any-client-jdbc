@@ -21,7 +21,7 @@ public class SqlRunService {
     //执行插入和更改，有参数
     //执行查询，有参数
 
-    public RunSqlResult<List<Map<String, Object>>> query(ConnectQuery connectQuery, SqlQuery sqlQuery) {
+    public RunSqlResult<List<Map<String, Object>>> query(ConnectQuery connectQuery, SqlQuery sqlQuery) throws Exception {
 
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         return SqlExecutor.query(connectQuery, jdbcConfigurationApi, sqlQuery,false);
@@ -33,28 +33,28 @@ public class SqlRunService {
      * @param sqlQuery
      * @return
      */
-    public RunSqlResult<List<Map<String, Object>>> tableQuery(ConnectQuery connectQuery, SqlQuery sqlQuery) {
+    public RunSqlResult<List<Map<String, Object>>> tableQuery(ConnectQuery connectQuery, SqlQuery sqlQuery) throws Exception {
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         sqlQuery.setAlyColumn(true);
         return SqlExecutor.query(connectQuery, jdbcConfigurationApi, sqlQuery,true);
     }
 
-    public RunSqlResult exec(ConnectQuery connectQuery, SqlQuery sqlQuery) {
+    public RunSqlResult exec(ConnectQuery connectQuery, SqlQuery sqlQuery) throws Exception {
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         return SqlExecutor.execute(connectQuery, jdbcConfigurationApi, sqlQuery.getSql(), sqlQuery.getParams());
     }
 
-    public List<RunSqlResult> multiExec(ConnectQuery connectQuery, BatchSqlQuery batchSqlQuery) {
+    public List<RunSqlResult> multiExec(ConnectQuery connectQuery, BatchSqlQuery batchSqlQuery) throws Exception {
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         return SqlExecutor.multiExecute(connectQuery, jdbcConfigurationApi, batchSqlQuery.getBatchSql(), batchSqlQuery.getParams());
     }
 
-    public RunSqlResult runSql(ConnectQuery connectQuery, String sql) {
+    public RunSqlResult runSql(ConnectQuery connectQuery, String sql) throws Exception {
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         return SqlExecutor.runSql(connectQuery, jdbcConfigurationApi, sql);
     }
 
-    public List<RunSqlResult> runBatch(ConnectQuery connectQuery, BatchSqlQuery batchQuery) {
+    public List<RunSqlResult> runBatch(ConnectQuery connectQuery, BatchSqlQuery batchQuery) throws Exception {
         IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
         return SqlExecutor.runBatch(connectQuery, jdbcConfigurationApi, batchQuery);
     }

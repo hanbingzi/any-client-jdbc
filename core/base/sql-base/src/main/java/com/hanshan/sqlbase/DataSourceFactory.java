@@ -80,7 +80,9 @@ public class DataSourceFactory {
             ServerInfo server = connectQuery.getServer();
             JdbcConnectConfig jdbcConnectConfig = getJdbcConnectConfig(connectQuery, configurationApi);
             HikariConfig hikariConfig = new HikariConfig();
-            hikariConfig.setDriverClassName(jdbcConnectConfig.getDriver());
+            if(StringUtils.isNotEmpty(jdbcConnectConfig.getDriver())) {
+                hikariConfig.setDriverClassName(jdbcConnectConfig.getDriver());
+            }
             // 4. 设置数据库连接 URL
             hikariConfig.setJdbcUrl(jdbcConnectConfig.getJdbcUrl());
             // 5. 设置数据库用户名和密码
@@ -115,8 +117,10 @@ public class DataSourceFactory {
     //oceanbase 连接说明：https://www.oceanbase.com/docs/common-oceanbase-database-cn-1000000000640068
     public static String getUsername(ServerInfo server) {
         String serverType = server.getServerType();
-        if (JdbcServerTypeEnum.OceanBase.name().equals(serverType)) {
+        JdbcServerTypeEnum serverTypeEnum = JdbcServerTypeEnum.valueOf(serverType);
+        if (JdbcServerTypeEnum.OceanBase == serverTypeEnum) {
             if (StringUtils.isNotEmpty(server.getTenant())) {
+                System.out.println("oceanbase---->tenant"+server.getTenant());
                 return server.getUser() + "@" + server.getTenant();
             }
         }
@@ -138,7 +142,9 @@ public class DataSourceFactory {
         } else {
             jdbcConnectConfig.setJdbcUrl(configurationApi.getServerUrl(server));
         }
-        jdbcConnectConfig.setDriver(configurationApi.getDriver());
+        if(StringUtils.isNotEmpty(configurationApi.getDriver())){
+            jdbcConnectConfig.setDriver(configurationApi.getDriver());
+        }
         jdbcConnectConfig.setDb(db);
         jdbcConnectConfig.setSchema(schema);
         jdbcConnectConfig.setMaximumPoolSize(configurationApi.getMaximumPoolSize());
@@ -157,9 +163,12 @@ public class DataSourceFactory {
         connectionWrapper.setDb(connectConfig.getDb());
         connectionWrapper.setSchema(connectConfig.getSchema());
         HikariDataSource dataSource = null;
+        logger.info("创建链接--》"+connectConfig.getJdbcUrl());
         try {
             HikariConfig hikariConfig = new HikariConfig();
-            hikariConfig.setDriverClassName(connectConfig.getDriver());
+            if(StringUtils.isNotEmpty(connectConfig.getDriver())) {
+                hikariConfig.setDriverClassName(connectConfig.getDriver());
+            }
             // 4. 设置数据库连接 URL
             hikariConfig.setJdbcUrl(connectConfig.getJdbcUrl());
             // 5. 设置数据库用户名和密码

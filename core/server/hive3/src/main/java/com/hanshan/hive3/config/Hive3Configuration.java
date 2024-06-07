@@ -1,4 +1,4 @@
-package com.hanshan.clickhouse05.config;
+package com.hanshan.hive3.config;
 
 import com.hanshan.common.config.IJdbcConfiguration;
 import com.hanshan.common.pojo.model.ServerInfo;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class Hive3Configuration implements IJdbcConfiguration {
-    private String driver = "com.clickhouse.jdbc.ClickHouseDriver";
+    private String driver = "org.apache.hive.jdbc.HiveDriver";
     //private String jdbcUrl = "jdbc:sqlserver://127.0.0.1:1433;databaseName=test"
     private Boolean hasDatabaseUrl = true;
     private Boolean hasSchemaUrl = false;
@@ -25,13 +25,13 @@ public class Hive3Configuration implements IJdbcConfiguration {
     //jdbc:clickhouse://server1:8123,server2:8123,server3:8123/database
     @Override
     public String getServerUrl(ServerInfo server) {
-        String jdbcUrl = "jdbc:clickhouse://%s:%s";
+        String jdbcUrl = "jdbc:hive2://%s:%s";
         return String.format(jdbcUrl, server.getHost(), server.getPort());
     }
 
     @Override
     public String getDbUrl(ServerInfo server, String db) {
-        String jdbcUrl = "jdbc:clickhouse://%s:%s/%s";
+        String jdbcUrl = "jdbc:hive2://%s:%s/%s";
         return String.format(jdbcUrl, server.getHost(), server.getPort(), db);
     }
 
