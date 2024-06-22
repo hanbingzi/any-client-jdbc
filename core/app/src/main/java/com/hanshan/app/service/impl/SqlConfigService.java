@@ -10,11 +10,13 @@ import com.hanshan.common.pojo.model.ServerInfo;
 import com.hanshan.common.types.JdbcServerTypeEnum;
 import com.hanshan.db211.config.DB211Configuration;
 import com.hanshan.dialect.MysqlDialect;
-import com.hanshan.hive3.config.Hive3Configuration;
+//import com.hanshan.hive3.config.Hive3Configuration;
 import com.hanshan.mssql12.config.Mssql12Configuration;
 import com.hanshan.oceanbase2.config.Oceanbase2Configuration;
 import com.hanshan.postgresql42.config.Mysql8Configuration;
 import com.hanshan.postgresql42.config.Postgresql42Configuration;
+import com.hanshan.presto02.config.Presto02Configuration;
+import com.hanshan.trino4.config.Trino4Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,10 @@ public class SqlConfigService implements ISqlConfigService {
     private final static DB211Configuration db211Configuration = new DB211Configuration();
     private final static ClickHouse05Configuration clickHouse05Configuration = new ClickHouse05Configuration();
     private final static Oceanbase2Configuration oceanbase2Configuration = new Oceanbase2Configuration();
-    private final static Hive3Configuration hive3Configuration = new Hive3Configuration();
+//    private final static Hive3Configuration hive3Configuration = new Hive3Configuration();
+
+    private final static Trino4Configuration trino4Configuration = new Trino4Configuration();
+    private final static Presto02Configuration presto02Configuration = new Presto02Configuration();
     private final static AnsiSqlDialect ansiSqlDialect = new AnsiSqlDialect();
     private final static MysqlDialect mysqlDialect = new MysqlDialect();
 
@@ -56,7 +61,8 @@ public class SqlConfigService implements ISqlConfigService {
             case H2:
                 break;
             case Hive:
-                return hive3Configuration;
+//               return hive3Configuration;
+                break;
             case FileMaker:
                 break;
             case Teradata:
@@ -77,16 +83,16 @@ public class SqlConfigService implements ISqlConfigService {
                 break;
             case Flink:
                 break;
-            case Presto:
-                break;
             case Vertica:
                 break;
             case Greenplum:
                 break;
             case Derby:
                 break;
+            case Presto:
+                return presto02Configuration;
             case Trino:
-                break;
+                return trino4Configuration;
             case DuckDB:
                 break;
             default:

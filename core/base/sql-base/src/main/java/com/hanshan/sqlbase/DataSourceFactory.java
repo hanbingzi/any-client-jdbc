@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class DataSourceFactory {
@@ -22,24 +23,48 @@ public class DataSourceFactory {
     private static final Map<String, ConnectionWrapper> aliveConnection = new HashMap<>();
 
     public static void removeConnection(String idKey) {
-        for (String key : aliveConnection.keySet()) {
+//        for (String key : aliveConnection.keySet()) {
+//            if (key.equals(idKey) || key.startsWith(idKey)) {
+//                logger.info("关闭连接："+key);
+//                end(key);
+//            }
+//        }
+        Iterator<Map.Entry<String, ConnectionWrapper>> iterator = aliveConnection.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, ConnectionWrapper> entry = iterator.next();
+            String key = entry.getKey();
             if (key.equals(idKey) || key.startsWith(idKey)) {
                 end(key);
+                iterator.remove();
             }
         }
+
+    }
+
+    public static void removeAllConnection() {
+
+        Iterator<Map.Entry<String, ConnectionWrapper>> iterator = aliveConnection.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, ConnectionWrapper> entry = iterator.next();
+            String key = entry.getKey();
+            end(key);
+            iterator.remove();
+        }
+
     }
 
     public static void end(String idKey) {
         try {
             ConnectionWrapper connectionWrapper = aliveConnection.get(idKey);
             if (connectionWrapper != null) {
-                aliveConnection.remove(idKey);
                 HikariDataSource dataSource = connectionWrapper.getDataSource();
                 dataSource.close();
+                logger.info("success close " + idKey);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            throw e;
+            logger.error("-------------" + e.getMessage());
+            e.printStackTrace();
+            //throw e;
         }
     }
 
@@ -78,19 +103,8 @@ public class DataSourceFactory {
         HikariDataSource dataSource = null;
         try {
             ServerInfo server = connectQuery.getServer();
-            JdbcConnectConfig jdbcConnectConfig = getJdbcConnectConfig(connectQuery, configurationApi);
-            HikariConfig hikariConfig = new HikariConfig();
-            if(StringUtils.isNotEmpty(jdbcConnectConfig.getDriver())) {
-                hikariConfig.setDriverClassName(jdbcConnectConfig.getDriver());
-            }
-            // 4. 设置数据库连接 URL
-            hikariConfig.setJdbcUrl(jdbcConnectConfig.getJdbcUrl());
-            // 5. 设置数据库用户名和密码
-            hikariConfig.setUsername(getUsername(server));
-            hikariConfig.setPassword(server.getPassword());
-            hikariConfig.setMaximumPoolSize(jdbcConnectConfig.getMaximumPoolSize());
-            hikariConfig.setMinimumIdle(jdbcConnectConfig.getMinimumIdle());
-            hikariConfig.setMaxLifetime(jdbcConnectConfig.getMaxLifeTime());
+            JdbcConnectConfig connectConfig = getJdbcConnectConfig(connectQuery, configurationApi);
+            HikariConfig hikariConfig = createHikariConfig(server, connectConfig);
             // 7. 创建 HikariCP 数据源
             dataSource = new HikariDataSource(hikariConfig);
             dataSource.getConnection().close();
@@ -120,7 +134,7 @@ public class DataSourceFactory {
         JdbcServerTypeEnum serverTypeEnum = JdbcServerTypeEnum.valueOf(serverType);
         if (JdbcServerTypeEnum.OceanBase == serverTypeEnum) {
             if (StringUtils.isNotEmpty(server.getTenant())) {
-                System.out.println("oceanbase---->tenant"+server.getTenant());
+                System.out.println("oceanbase---->tenant" + server.getTenant());
                 return server.getUser() + "@" + server.getTenant();
             }
         }
@@ -142,7 +156,7 @@ public class DataSourceFactory {
         } else {
             jdbcConnectConfig.setJdbcUrl(configurationApi.getServerUrl(server));
         }
-        if(StringUtils.isNotEmpty(configurationApi.getDriver())){
+        if (StringUtils.isNotEmpty(configurationApi.getDriver())) {
             jdbcConnectConfig.setDriver(configurationApi.getDriver());
         }
         jdbcConnectConfig.setDb(db);
@@ -163,32 +177,44 @@ public class DataSourceFactory {
         connectionWrapper.setDb(connectConfig.getDb());
         connectionWrapper.setSchema(connectConfig.getSchema());
         HikariDataSource dataSource = null;
-        logger.info("创建链接--》"+connectConfig.getJdbcUrl());
+        logger.info("创建链接--》" + connectConfig.getJdbcUrl());
         try {
-            HikariConfig hikariConfig = new HikariConfig();
-            if(StringUtils.isNotEmpty(connectConfig.getDriver())) {
-                hikariConfig.setDriverClassName(connectConfig.getDriver());
-            }
-            // 4. 设置数据库连接 URL
-            hikariConfig.setJdbcUrl(connectConfig.getJdbcUrl());
-            // 5. 设置数据库用户名和密码
-            hikariConfig.setUsername(server.getUser());
-            hikariConfig.setPassword(server.getPassword());
-            // 6. 设置 HikariCP 连接池属性
-            hikariConfig.setMaximumPoolSize(connectConfig.getMaximumPoolSize());
-            hikariConfig.setMinimumIdle(connectConfig.getMinimumIdle());
+
+            HikariConfig hikariConfig = createHikariConfig(server, connectConfig);
             // 7. 创建 HikariCP 数据源
             dataSource = new HikariDataSource(hikariConfig);
             dataSource.getConnection().close();
             connectionWrapper.setDataSource(dataSource);
             return Result.success(connectionWrapper);
         } catch (Exception e) {
+            e.printStackTrace();
             if (e instanceof SQLException) {
                 SQLException se = (SQLException) e;
                 return Result.error(se.getErrorCode(), se.getMessage());
             }
             return Result.error(ResponseEnum.UNKNOWN_ERROR.code, e.getMessage());
         }
+    }
+
+    public static HikariConfig createHikariConfig(ServerInfo server, JdbcConnectConfig connectConfig) {
+        HikariConfig hikariConfig = new HikariConfig();
+        if (StringUtils.isNotEmpty(connectConfig.getDriver())) {
+            hikariConfig.setDriverClassName(connectConfig.getDriver());
+        }
+        // 4. 设置数据库连接 URL
+        hikariConfig.setJdbcUrl(connectConfig.getJdbcUrl());
+        String username = getUsername(server);
+        // 5. 设置数据库用户名和密码
+        if (StringUtils.isNotEmpty(username))
+            hikariConfig.setUsername(username);
+        if (StringUtils.isNotEmpty(server.getPassword()))
+            hikariConfig.setPassword(server.getPassword());
+        // 6. 设置 HikariCP 连接池属性
+        hikariConfig.setMaximumPoolSize(connectConfig.getMaximumPoolSize());
+        hikariConfig.setMinimumIdle(connectConfig.getMinimumIdle());
+        hikariConfig.setMaxLifetime(connectConfig.getMaxLifeTime());
+
+        return hikariConfig;
     }
 
 

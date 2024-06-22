@@ -1,6 +1,7 @@
 package com.hanshan.app.service.impl;
 
 import com.hanshan.common.config.IJdbcConfiguration;
+import com.hanshan.common.pojo.model.PrimaryInfo;
 import com.hanshan.common.pojo.model.VFTSPInfo;
 import com.hanshan.common.pojo.query.ConnectQuery;
 import com.hanshan.common.pojo.result.Result;
@@ -25,13 +26,18 @@ public class AllSqlBaseService {
        IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
        return SqlMetaOperator.testConnect(connectQuery,jdbcConfigurationApi);
    }
-   public Result closeConnect(ConnectQuery connectQuery){
-       String idKey = ConnectIdKey.getConnectIdKey(connectQuery);
-       DataSourceFactory.removeConnection(idKey);
+    public Result closeConnect(ConnectQuery connectQuery){
+        String idKey = ConnectIdKey.getConnectIdKey(connectQuery);
+        DataSourceFactory.removeConnection(idKey);
+        return Result.success();
+    }
 
-       return Result.success();
 
-   }
+    public Result closeAllConnect(){
+        DataSourceFactory.removeAllConnection();
+        return Result.success();
+
+    }
 
     //展示所有的库
 
@@ -85,6 +91,15 @@ public class AllSqlBaseService {
         }
         return SqlMetaOperator.showProcedures(connectQuery, jdbcConfigurationApi);
     }
+
+    public Result<List<PrimaryInfo>> showPrimary(ConnectQuery connectQuery, String table) throws Exception {
+        IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+        if (jdbcConfigurationApi.hasSchema() && StringUtils.isEmpty(connectQuery.getSchema())) {
+            return Result.error(ResponseEnum.PARAM_ERROR);
+        }
+        return SqlMetaOperator.showPrimary(connectQuery, jdbcConfigurationApi,table);
+    }
+
     //展示所有的trigger
     //展示所有的sequence
     //查询分页列表

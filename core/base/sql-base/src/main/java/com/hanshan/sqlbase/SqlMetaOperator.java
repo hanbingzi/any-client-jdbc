@@ -1,6 +1,7 @@
 package com.hanshan.sqlbase;
 
 import com.hanshan.common.config.IJdbcConfiguration;
+import com.hanshan.common.pojo.model.PrimaryInfo;
 import com.hanshan.common.pojo.model.VFTSPInfo;
 import com.hanshan.common.pojo.query.ConnectQuery;
 import com.hanshan.common.pojo.result.Result;
@@ -72,7 +73,7 @@ public class SqlMetaOperator {
         ResultSet resultSet = null;
         try {
             connection = connectResult.getData();
-            resultSet = connection.getMetaData().getSchemas();
+            resultSet = connection.getMetaData().getSchemas(connectQuery.getDb(), null);
             List<String> databases = new ArrayList<>();
             while (resultSet.next()) {
                 databases.add(resultSet.getString(1));
@@ -206,6 +207,48 @@ public class SqlMetaOperator {
                 tables.add(nameComment);
             }
             return Result.success(tables);
+        } catch (SQLException e) {
+            return Result.error(e.getErrorCode(), e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+            } catch (SQLException e) {
+                logger.error("SqlConnRunner close error in showDatabase,error code{},error message{}", e.getErrorCode(), e.getMessage());
+            }
+        }
+    }
+
+    public static Result<List<PrimaryInfo>> showPrimary(ConnectQuery connectQuery, IJdbcConfiguration configurationApi, String table) {
+        Result<Connection> connectResult = DataSourceFactory.getConnection(connectQuery, configurationApi);
+        if (!connectResult.getSuccess()) {
+            return Result.error(connectResult);
+        }
+        Connection connection = null;
+        ResultSet resultSet = null;
+        try {
+            String schema = configurationApi.hasSchema() ? connectQuery.getSchema() : null;
+            connection = connectResult.getData();
+            resultSet = connection.getMetaData().getPrimaryKeys(connectQuery.getDb(), schema, table);
+            List<PrimaryInfo> primaryInfos = new ArrayList<>();
+            //logger.info("---showtables ==={}",resultSet.getMetaData());
+            while (resultSet.next()) {
+                PrimaryInfo primaryInfo = new PrimaryInfo();
+                String tableName = resultSet.getString("TABLE_NAME");
+                String columnName = resultSet.getString("COLUMN_NAME");
+                Integer seq = resultSet.getInt("KEY_SEQ");
+                String pkName = resultSet.getString("PK_NAME");
+                primaryInfo.setTableName(tableName);
+                primaryInfo.setColumnName(columnName);
+                primaryInfo.setOrdinal(seq);
+                primaryInfo.setConstraint(pkName);
+                primaryInfos.add(primaryInfo);
+            }
+            return Result.success(primaryInfos);
         } catch (SQLException e) {
             return Result.error(e.getErrorCode(), e.getMessage());
         } finally {

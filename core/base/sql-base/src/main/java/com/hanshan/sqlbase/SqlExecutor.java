@@ -135,11 +135,11 @@ public class SqlExecutor {
                             break;
                         case _CLOB:
                             Clob tempClob = resultSet.getClob(i);
-                            value = tempClob != null ? tempClob.length() : null;
+                            value = tempClob != null ? "(BLOB) " + tempClob.length() + " bytes" : null;
                             break;
                         case _BYTES:
                             byte[] tempByte = resultSet.getBytes(i);
-                            value = tempByte != null ? tempByte.length : null;
+                            value = tempByte != null ? "(BLOB) " + tempByte.length + " bytes" : null;
                             break;
                         case _URL:
                             java.net.URL tempUrl = resultSet.getURL(i);
@@ -255,7 +255,7 @@ public class SqlExecutor {
             sqlResult.setCode(ResponseEnum.SUCCESS.code);
 
             sqlResult.setAffectedRows(affectRow);
-            sqlResult.setMessage("Affected Rows: "+affectRow);
+            sqlResult.setMessage("Affected Rows: " + affectRow);
             return sqlResult;
         } catch (SQLException e) {
             e.printStackTrace();

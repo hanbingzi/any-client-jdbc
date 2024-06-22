@@ -2,11 +2,24 @@ dependencies {
     implementation project(':core:plugin-common')
     // https://mvnrepository.com/artifact/org.apache.hive/hive-jdbc
     // https://mvnrepository.com/artifact/org.apache.hive/hive-jdbc
-//    implementation ('org.apache.hive:hive-jdbc:4.0.0')
-    implementation ('org.apache.hive:hive-jdbc:2.3.10'){
-        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-        exclude group: 'org.slf4j', module: 'slf4j-reload4j'
-    }
+    implementation 'org.apache.hive:hive-jdbc:4.0.0'
+    implementation 'org.apache.hive:hive-common:4.0.0'
+    implementation 'org.apache.hive:hive-service:4.0.0'
+    // https://mvnrepository.com/artifact/net.shibboleth.tool/xmlsectool
+    //implementation 'org.apache.hive:hive-service-rpc:4.0.0'
+//    implementation 'org.apache.hive:hive-shims:4.0.0'
+//    implementation 'org.apache.hive:hive-serde:4.0.0'
+
+
+
+
+    // https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-common
+  //  implementation 'org.apache.hadoop:hadoop-common:3.2.4'
+
+//    implementation ('org.apache.hive:hive-jdbc:2.3.10'){
+//        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+//        exclude group: 'org.slf4j', module: 'slf4j-reload4j'
+//    }
 
 }
 

@@ -56,13 +56,14 @@ public class ResultSetColumnUtils {
             if (sqlQuery.getAlyColumn()!=null && sqlQuery.getAlyColumn()) {
                 //处理备注，
                 resolveOneColumnRemarkAndDef(columnMeta, conn, dbName, schemaName, tableName, columnName, sqlQuery.getConfig());
-               if(StringUtils.isNotEmpty(tableName)) {
-                   if (!primaryMap.containsKey(tableName)) {
-                       primaryMap.put(tableName, getTablePrimaryKeys(conn, dbName, schemaName, tableName, sqlQuery.getConfig()));
-                   }
-                   List<String> tablePrimary = primaryMap.get(tableName);
-                   columnMeta.setIsPrimary(tablePrimary.contains(columnName));
-               }
+                //单独分析，此处不在分析主键
+//               if(StringUtils.isNotEmpty(tableName)) {
+//                   if (!primaryMap.containsKey(tableName)) {
+//                       primaryMap.put(tableName, getTablePrimaryKeys(conn, dbName, schemaName, tableName, sqlQuery.getConfig()));
+//                   }
+//                   List<String> tablePrimary = primaryMap.get(tableName);
+//                   columnMeta.setIsPrimary(tablePrimary.contains(columnName));
+//               }
             }
             //处理主键
             columnMetaList.add(columnMeta);

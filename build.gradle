@@ -15,6 +15,7 @@ allprojects {
         //mavenLocal()
         //阿里仓库
         maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://build.shibboleth.net/nexus/content/repositories/releases/' }
         mavenCentral()
     }
 }

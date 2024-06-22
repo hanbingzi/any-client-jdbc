@@ -1,0 +1,8 @@
+dependencies {
+    implementation project(':core:plugin-common')
+    // https://mvnrepository.com/artifact/io.trino/trino-jdbc
+    implementation 'io.trino:trino-jdbc:425'
+
+
+}
+

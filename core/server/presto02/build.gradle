@@ -1,0 +1,9 @@
+dependencies {
+    implementation project(':core:plugin-common')
+    // https://mvnrepository.com/artifact/com.facebook.presto/presto-jdbc
+    implementation 'com.facebook.presto:presto-jdbc:0.287'
+
+
+
+}
+
