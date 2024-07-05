@@ -161,9 +161,15 @@ public class DataSourceFactory {
         }
         jdbcConnectConfig.setDb(db);
         jdbcConnectConfig.setSchema(schema);
-        jdbcConnectConfig.setMaximumPoolSize(configurationApi.getMaximumPoolSize());
-        jdbcConnectConfig.setMinimumIdle(configurationApi.getMinimumIdle());
-        jdbcConnectConfig.setMaxLifeTime(configurationApi.getMaxLifeTime());
+        if (configurationApi.getMaximumPoolSize() != null && configurationApi.getMaximumPoolSize() != 0)
+            jdbcConnectConfig.setMaximumPoolSize(configurationApi.getMaximumPoolSize());
+        if (configurationApi.getMinimumIdle() != null && configurationApi.getMinimumIdle() != 0)
+            jdbcConnectConfig.setMinimumIdle(configurationApi.getMinimumIdle());
+        //时间单位，前端输入的为秒，实际使用为毫秒
+        if (configurationApi.getMaxLifeTime() != null && configurationApi.getMaxLifeTime() != 0)
+            jdbcConnectConfig.setMaxLifeTime(configurationApi.getMaxLifeTime() );
+        if (configurationApi.getIdleTimeout() != null && configurationApi.getIdleTimeout() != 0)
+            jdbcConnectConfig.setIdleTimeout(configurationApi.getIdleTimeout() );
         return jdbcConnectConfig;
     }
 
@@ -213,6 +219,7 @@ public class DataSourceFactory {
         hikariConfig.setMaximumPoolSize(connectConfig.getMaximumPoolSize());
         hikariConfig.setMinimumIdle(connectConfig.getMinimumIdle());
         hikariConfig.setMaxLifetime(connectConfig.getMaxLifeTime());
+        hikariConfig.setIdleTimeout(connectConfig.getIdleTimeout());
 
         return hikariConfig;
     }

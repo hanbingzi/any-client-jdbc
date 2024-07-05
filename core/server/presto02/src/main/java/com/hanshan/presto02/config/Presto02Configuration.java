@@ -16,7 +16,19 @@ public class Presto02Configuration implements IJdbcConfiguration {
     private Integer maximumPoolSize = 3;
     private Integer minimumIdle = 1;
     private Long maxLifeTime = 10 * 60 * 1000L;
+    private Long idleTimeout = 10 * 60 * 1000L;
 
+    private Presto02Configuration(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        this.maximumPoolSize = maximumPoolSize;
+        this.minimumIdle = minimumIdle;
+        this.maxLifeTime = maxLifeTime;
+        this.idleTimeout = idleTimeout;
+    }
+
+
+    public static Presto02Configuration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        return new Presto02Configuration(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+    }
     @Override
     public String getDriver() {
         return this.driver;

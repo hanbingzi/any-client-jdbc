@@ -16,7 +16,18 @@ public class Mysql8Configuration implements IJdbcConfiguration {
     private Integer maximumPoolSize = 5;
     private Integer minimumIdle = 1;
     private Long maxLifeTime = 10 * 60 * 1000L;
+    private Long idleTimeout = 10 * 60 * 1000L;
 
+    private Mysql8Configuration(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        this.maximumPoolSize = maximumPoolSize;
+        this.minimumIdle = minimumIdle;
+        this.maxLifeTime = maxLifeTime;
+        this.idleTimeout = idleTimeout;
+    }
+
+    public static Mysql8Configuration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        return new Mysql8Configuration(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+    }
     @Override
     public String getDriver() {
         return this.driver;

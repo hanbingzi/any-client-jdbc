@@ -17,7 +17,19 @@ public class Postgresql42Configuration implements IJdbcConfiguration {
     private Integer maximumPoolSize = 3;
     private Integer minimumIdle = 1;
     private Long maxLifeTime = 10 * 60 * 1000L;
+    private Long idleTimeout = 10 * 60 * 1000L;
 
+    private Postgresql42Configuration(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        this.maximumPoolSize = maximumPoolSize;
+        this.minimumIdle = minimumIdle;
+        this.maxLifeTime = maxLifeTime;
+        this.idleTimeout = idleTimeout;
+    }
+
+
+    public static Postgresql42Configuration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        return new Postgresql42Configuration(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+    }
     @Override
     public String getDriver() {
         return this.driver;

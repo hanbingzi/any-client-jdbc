@@ -3,6 +3,7 @@ package com.hanshan.clickhouse05.config;
 import com.hanshan.common.config.IJdbcConfiguration;
 import com.hanshan.common.pojo.model.ServerInfo;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 public class ClickHouse05Configuration implements IJdbcConfiguration {
@@ -16,11 +17,25 @@ public class ClickHouse05Configuration implements IJdbcConfiguration {
     private Integer maximumPoolSize = 3;
     private Integer minimumIdle = 1;
     private Long maxLifeTime = 10 * 60 * 1000L;
+    private Long idleTimeout = 10 * 60 * 1000L;
+
+    private ClickHouse05Configuration(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        this.maximumPoolSize = maximumPoolSize;
+        this.minimumIdle = minimumIdle;
+        this.maxLifeTime = maxLifeTime;
+        this.idleTimeout = idleTimeout;
+    }
+
+
+    public static ClickHouse05Configuration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        return new ClickHouse05Configuration(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+    }
 
     @Override
     public String getDriver() {
         return this.driver;
     }
+
     //jdbc:clickhouse://localhost:8123/default
     //jdbc:clickhouse://server1:8123,server2:8123,server3:8123/database
     @Override
@@ -75,9 +90,15 @@ public class ClickHouse05Configuration implements IJdbcConfiguration {
         return this.maxLifeTime;
     }
 
+    @Override
+    public Long getIdleTimeout() {
+        return null;
+    }
+
 
     @Override
     public String getDefaultSchema() {
         return "dbo";
     }
+
 }

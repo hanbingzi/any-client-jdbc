@@ -16,7 +16,19 @@ public class Oceanbase2Configuration implements IJdbcConfiguration {
     private Integer maximumPoolSize = 3;
     private Integer minimumIdle = 1;
     private Long maxLifeTime = 10 * 60 * 1000L;
+    private Long idleTimeout = 10 * 60 * 1000L;
 
+    private Oceanbase2Configuration(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        this.maximumPoolSize = maximumPoolSize;
+        this.minimumIdle = minimumIdle;
+        this.maxLifeTime = maxLifeTime;
+        this.idleTimeout = idleTimeout;
+    }
+
+
+    public static Oceanbase2Configuration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        return new Oceanbase2Configuration(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+    }
     @Override
     public String getDriver() {
         return this.driver;

@@ -26,36 +26,36 @@ public class SqlConfigService implements ISqlConfigService {
 
     final static Logger logger = LoggerFactory.getLogger(SqlConfigService.class);
 
-    private final static Mysql8Configuration mysql8Configuration = new Mysql8Configuration();
-    private final static Mssql12Configuration mssql12Configuration = new Mssql12Configuration();
-    private final static Postgresql42Configuration postgresql42Configuration = new Postgresql42Configuration();
-    private final static DB211Configuration db211Configuration = new DB211Configuration();
-    private final static ClickHouse05Configuration clickHouse05Configuration = new ClickHouse05Configuration();
-    private final static Oceanbase2Configuration oceanbase2Configuration = new Oceanbase2Configuration();
-//    private final static Hive3Configuration hive3Configuration = new Hive3Configuration();
-
-    private final static Trino4Configuration trino4Configuration = new Trino4Configuration();
-    private final static Presto02Configuration presto02Configuration = new Presto02Configuration();
     private final static AnsiSqlDialect ansiSqlDialect = new AnsiSqlDialect();
     private final static MysqlDialect mysqlDialect = new MysqlDialect();
 
     public IJdbcConfiguration getServerConfigurationApi(ServerInfo server) throws Exception {
         String serverType = server.getServerType();
         String version = server.getVersion();
+        //连接字符编码
+         String connectEncoding = server.getConnectEncoding();
+        //连接池最大连接数
+        Integer maximumPoolSize = server.getMaximumPoolSize();
+        //连接池最小连接数
+        Integer minimumIdle = server.getMinimumIdle();
+        //连接会话时长
+        Long maxLifeTime = server.getMaxLifeTime();
+        //空闲连接超时时间
+        Long idleTimeout= server.getIdleTimeout();
         JdbcServerTypeEnum serverTypeEnum = JdbcServerTypeEnum.valueOf(serverType);
         //1.先判断server，然后判断version
         switch (serverTypeEnum) {
             case TiDB:
             case Mysql:
-                return mysql8Configuration;
+                return Mysql8Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case Postgresql:
-                return postgresql42Configuration;
+                return Postgresql42Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case SQLServer:
-                return mssql12Configuration;
+                return Mssql12Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case DB2:
-                return db211Configuration;
+                return DB211Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case OceanBase:
-                return oceanbase2Configuration;
+                return Oceanbase2Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case RDJC:
                 break;
             case H2:
@@ -78,7 +78,7 @@ public class SqlConfigService implements ISqlConfigService {
             case Informix:
                 break;
             case ClickHouse:
-                return clickHouse05Configuration;
+                return ClickHouse05Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case Impala:
                 break;
             case Flink:
@@ -90,9 +90,9 @@ public class SqlConfigService implements ISqlConfigService {
             case Derby:
                 break;
             case Presto:
-                return presto02Configuration;
+                return Presto02Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case Trino:
-                return trino4Configuration;
+                return Trino4Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case DuckDB:
                 break;
             default:

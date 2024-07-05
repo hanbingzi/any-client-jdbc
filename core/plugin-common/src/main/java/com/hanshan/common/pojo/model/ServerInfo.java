@@ -14,7 +14,7 @@ public class ServerInfo {
     private String host;
     private String serverType;
 
-//    connectionType?:AllConnectionType;
+    //    connectionType?:AllConnectionType;
 //    /**
 //     * 实例名称
 //     */
@@ -22,20 +22,31 @@ public class ServerInfo {
     private String version;
     private String database;
     private String tenant;
-//    /**
+    //    /**
 //     * 登录角色
 //     * oracle会用到
 //     */
     private String role;
-//    /**
+    //    /**
 //     * 记录密码
 //     */
 //    rememberMe?:boolean;
 //
-//    timezone?:string;
-//    connectTimeout?:number;
+    private String timezone;
+    //    connectTimeout?:number;
 //    requestTimeout?:number;
-//    connectionUrl?:string;
+    //连接字符编码
+    private String connectEncoding;
+    //连接池最大连接数
+    private Integer maximumPoolSize;
+    //连接池最小连接数
+    private Integer minimumIdle;
+    //空闲连接超时时间
+    private Long idleTimeout;
+    //连接会话时长
+    private Long maxLifeTime;
+
+    //    connectionUrl?:string;
 //    /**
 //     * ssh
 //     */

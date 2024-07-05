@@ -21,6 +21,8 @@ import com.hanshan.common.pojo.result.RunSqlResult;
 import com.hanshan.common.types.ResponseEnum;
 import com.hanshan.common.utils.DecryptUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +40,7 @@ public class JdbcSqlRest {
     @Autowired
     private SqlRunService sqlRunService;
 
+    public static final Logger log = LoggerFactory.getLogger(JdbcSqlRest.class);
     @PostMapping("setServer")
     public Result setServer(@RequestBody ServerQuery server) throws Exception {
         String password = server.getServer().getPassword();
@@ -73,6 +76,7 @@ public class JdbcSqlRest {
 
     @PostMapping("closeConnect")
     public Result closeConnect(@RequestBody ConnectQuery request) {
+        log.info("关闭连接:库:{},schema:{}",request.getDb(),request.getSchema());
         return allSqlService.closeConnect(request);
     }
 
@@ -171,7 +175,7 @@ public class JdbcSqlRest {
     }
 
     @PostMapping("showPrimary")
-    public Result<List<PrimaryInfo>> showProcedures(@RequestBody ServerRequest<String> request) throws Exception {
+    public Result<List<PrimaryInfo>> showPrimary(@RequestBody ServerRequest<String> request) throws Exception {
         ConnectQuery connectQuery = request.getConnect();
         if (StringUtils.isEmpty(request.getData())) {
             return Result.runSqlError(ResponseEnum.PARAM_ERROR);

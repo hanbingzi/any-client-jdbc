@@ -99,7 +99,8 @@ public class SqlExecutor {
                             value = resultSet.getInt(i);
                             break;
                         case _LONG:
-                            value = resultSet.getLong(i);
+                            value =String.valueOf(resultSet.getLong(i));
+                           // System.out.println(columnLabel+"-"+value);
                             break;
                         case _FLOAT:
                             value = resultSet.getFloat(i);

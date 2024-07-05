@@ -16,6 +16,19 @@ public class Hive3Configuration implements IJdbcConfiguration {
     private Integer maximumPoolSize = 3;
     private Integer minimumIdle = 1;
     private Long maxLifeTime = 10 * 60 * 1000L;
+    private Long idleTimeout = 10 * 60 * 1000L;
+
+    private Hive3Configuration(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        this.maximumPoolSize = maximumPoolSize;
+        this.minimumIdle = minimumIdle;
+        this.maxLifeTime = maxLifeTime;
+        this.idleTimeout = idleTimeout;
+    }
+
+
+    public static Hive3Configuration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        return new Hive3Configuration(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+    }
 
     @Override
     public String getDriver() {

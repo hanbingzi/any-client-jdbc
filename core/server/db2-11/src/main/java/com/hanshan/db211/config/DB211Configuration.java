@@ -3,6 +3,7 @@ package com.hanshan.db211.config;
 import com.hanshan.common.config.IJdbcConfiguration;
 import com.hanshan.common.pojo.model.ServerInfo;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 public class DB211Configuration implements IJdbcConfiguration {
@@ -16,6 +17,19 @@ public class DB211Configuration implements IJdbcConfiguration {
     private Integer maximumPoolSize = 3;
     private Integer minimumIdle = 1;
     private Long maxLifeTime = 10 * 60 * 1000L;
+    private Long idleTimeout = 10 * 60 * 1000L;
+
+    private DB211Configuration(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        this.maximumPoolSize = maximumPoolSize;
+        this.minimumIdle = minimumIdle;
+        this.maxLifeTime = maxLifeTime;
+        this.idleTimeout = idleTimeout;
+    }
+
+
+    public static IJdbcConfiguration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        return new DB211Configuration(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+    }
 
     @Override
     public String getDriver() {
@@ -81,4 +95,6 @@ public class DB211Configuration implements IJdbcConfiguration {
     public String getDefaultSchema() {
         return "dbo";
     }
+
+
 }

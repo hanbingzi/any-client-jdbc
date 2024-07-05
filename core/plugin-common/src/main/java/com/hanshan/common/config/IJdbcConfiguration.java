@@ -46,7 +46,11 @@ public interface IJdbcConfiguration {
 
     Long getMaxLifeTime();
 
+    Long getIdleTimeout();
+
     String getDefaultSchema();
+
+   // IJdbcConfiguration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout);
 
 
 }

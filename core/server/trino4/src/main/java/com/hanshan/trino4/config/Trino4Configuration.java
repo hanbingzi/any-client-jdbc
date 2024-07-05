@@ -16,11 +16,25 @@ public class Trino4Configuration implements IJdbcConfiguration {
     private Integer maximumPoolSize = 3;
     private Integer minimumIdle = 1;
     private Long maxLifeTime = 10 * 60 * 1000L;
+    private Long idleTimeout = 10 * 60 * 1000L;
+
+    private Trino4Configuration(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        this.maximumPoolSize = maximumPoolSize;
+        this.minimumIdle = minimumIdle;
+        this.maxLifeTime = maxLifeTime;
+        this.idleTimeout = idleTimeout;
+    }
+
+
+    public static Trino4Configuration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+        return new Trino4Configuration(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+    }
 
     @Override
     public String getDriver() {
         return this.driver;
     }
+
     //jdbc:clickhouse://localhost:8123/default
     //jdbc:clickhouse://server1:8123,server2:8123,server3:8123/database
     @Override
@@ -38,7 +52,7 @@ public class Trino4Configuration implements IJdbcConfiguration {
     @Override
     public String getSchemaUrl(ServerInfo server, String db, String schema) {
         String jdbcUrl = "jdbc:trino://%s:%s/%s/%s";
-        return String.format(jdbcUrl, server.getHost(), server.getPort(), db,schema);
+        return String.format(jdbcUrl, server.getHost(), server.getPort(), db, schema);
     }
 
     @Override
@@ -80,5 +94,10 @@ public class Trino4Configuration implements IJdbcConfiguration {
     @Override
     public String getDefaultSchema() {
         return "dbo";
+    }
+
+    @Override
+    public Long getIdleTimeout() {
+        return this.idleTimeout;
     }
 }
