@@ -4,6 +4,7 @@ dependencies {
     implementation project(':core:base:sql-base')
     implementation project(':core:server:mysql-base')
     implementation project(':core:server:server-clickhouse05')
+    implementation project(':core:server:server-dameng8')
     implementation project(':core:server:server-db2-11')
 //    implementation (project(':core:server:server-hive3'))
     implementation project(':core:server:server-mysql8')

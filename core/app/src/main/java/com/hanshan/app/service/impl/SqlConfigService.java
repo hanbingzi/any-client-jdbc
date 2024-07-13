@@ -8,12 +8,13 @@ import com.hanshan.common.dialect.AnsiSqlDialect;
 import com.hanshan.common.dialect.BaseSqlDialect;
 import com.hanshan.common.pojo.model.ServerInfo;
 import com.hanshan.common.types.JdbcServerTypeEnum;
+import com.hanshan.dameng8.config.Dameng8Configuration;
 import com.hanshan.db211.config.DB211Configuration;
 import com.hanshan.dialect.MysqlDialect;
 //import com.hanshan.hive3.config.Hive3Configuration;
 import com.hanshan.mssql12.config.Mssql12Configuration;
 import com.hanshan.oceanbase2.config.Oceanbase2Configuration;
-import com.hanshan.postgresql42.config.Mysql8Configuration;
+import com.hanshan.mysql8.config.Mysql8Configuration;
 import com.hanshan.postgresql42.config.Postgresql42Configuration;
 import com.hanshan.presto02.config.Presto02Configuration;
 import com.hanshan.trino4.config.Trino4Configuration;
@@ -56,6 +57,8 @@ public class SqlConfigService implements ISqlConfigService {
                 return DB211Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case OceanBase:
                 return Oceanbase2Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+            case DM:
+                return Dameng8Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case RDJC:
                 break;
             case H2:

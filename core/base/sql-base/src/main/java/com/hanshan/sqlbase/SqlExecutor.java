@@ -2,6 +2,7 @@ package com.hanshan.sqlbase;
 
 import com.hanshan.common.config.IJdbcConfiguration;
 import com.hanshan.common.pojo.model.ColumnMeta;
+import com.hanshan.common.pojo.model.FileInfo;
 import com.hanshan.common.pojo.param.SqlPsParam;
 import com.hanshan.common.pojo.param.SqlQueryParam;
 import com.hanshan.common.pojo.query.BatchSqlQuery;
@@ -34,6 +35,7 @@ public class SqlExecutor {
             return Result.runSqlError(connectResult);
         }
         Connection connection = null;
+        RunSqlResult<List<Map<String, Object>>> sqlResult =  new RunSqlResult<>();
         try {
             long startTime = System.currentTimeMillis();
             connection = connectResult.getData();
@@ -43,13 +45,18 @@ public class SqlExecutor {
             } else {
                 sqlQueryParam = SqlUtils.getSqlQuery(connectQuery, configurationApi, query);
             }
-            RunSqlResult<List<Map<String, Object>>> sqlResult = query(connection, null, sqlQueryParam);
+            sqlResult = query(connection, null, sqlQueryParam);
             Long costTime = System.currentTimeMillis() - startTime;
             sqlResult.setCostTime(costTime);
             return sqlResult;
         } catch (Exception e) {
+            logger.info("query1:{}",e.getMessage());
             e.printStackTrace();
-            return Result.runSqlError(ResponseEnum.UNKNOWN_ERROR.code, e.getMessage());
+            sqlResult.setSuccess(false);
+            sqlResult.setMessage(e.getMessage());
+            sqlResult.setCode(ResponseEnum.UNKNOWN_ERROR.code);
+            sqlResult.setSql(query.getSql());
+            return sqlResult;
         } finally {
             try {
                 if (connection != null) {
@@ -132,15 +139,15 @@ public class SqlExecutor {
                             break;
                         case _BLOB:
                             Blob tempBlob = resultSet.getBlob(i);
-                            value = tempBlob != null ? tempBlob.length() : tempBlob;
+                            value = FileInfo.getInstance(tempBlob);
                             break;
                         case _CLOB:
                             Clob tempClob = resultSet.getClob(i);
-                            value = tempClob != null ? "(BLOB) " + tempClob.length() + " bytes" : null;
+                            value = FileInfo.getInstance(tempClob);
                             break;
                         case _BYTES:
                             byte[] tempByte = resultSet.getBytes(i);
-                            value = tempByte != null ? "(BLOB) " + tempByte.length + " bytes" : null;
+                            value = FileInfo.getInstance(tempByte);
                             break;
                         case _URL:
                             java.net.URL tempUrl = resultSet.getURL(i);
@@ -162,11 +169,14 @@ public class SqlExecutor {
             sqlResult.setColumns(columnMetas);
             sqlResult.setData(data);
             return sqlResult;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             sqlResult.setMessage(e.getMessage());
             sqlResult.setSuccess(false);
-            sqlResult.setCode(e.getErrorCode());
+            if(e instanceof SQLException){
+                SQLException se =(SQLException) e;
+                sqlResult.setCode(se.getErrorCode());
+            }
             return sqlResult;
         } finally {
             try {

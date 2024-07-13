@@ -19,10 +19,13 @@ public class Hive3Configuration implements IJdbcConfiguration {
     private Long idleTimeout = 10 * 60 * 1000L;
 
     private Hive3Configuration(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+       
         this.maximumPoolSize = maximumPoolSize;
         this.minimumIdle = minimumIdle;
-        this.maxLifeTime = maxLifeTime;
-        this.idleTimeout = idleTimeout;
+        if (maxLifeTime != null)
+            this.maxLifeTime = maxLifeTime;
+        if (idleTimeout != null)
+            this.idleTimeout = idleTimeout;
     }
 
 

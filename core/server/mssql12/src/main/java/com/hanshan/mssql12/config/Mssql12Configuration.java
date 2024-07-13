@@ -20,16 +20,20 @@ public class Mssql12Configuration implements IJdbcConfiguration {
     private Long idleTimeout = 10 * 60 * 1000L;
 
     private Mssql12Configuration(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
+
         this.maximumPoolSize = maximumPoolSize;
         this.minimumIdle = minimumIdle;
-        this.maxLifeTime = maxLifeTime;
-        this.idleTimeout = idleTimeout;
+        if (maxLifeTime != null)
+            this.maxLifeTime = maxLifeTime;
+        if (idleTimeout != null)
+            this.idleTimeout = idleTimeout;
     }
 
 
     public static Mssql12Configuration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout) {
-        return new Mssql12Configuration(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+        return new Mssql12Configuration(maximumPoolSize, minimumIdle, maxLifeTime, idleTimeout);
     }
+
     @Override
     public String getDriver() {
         return this.driver;
