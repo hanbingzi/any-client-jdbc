@@ -1,5 +1,6 @@
 package com.hanshan.common.types;
 
+import java.util.Arrays;
 import java.util.List;
 
 //    | `boolean` | `BOOLEAN` (16) | `setBoolean(int parameterIndex, boolean x)` |
@@ -22,27 +23,27 @@ import java.util.List;
 //            | `Object` | `OTHER` (1111) | `setObject(int parameterIndex, Object x, int targetSqlType)` |
 public enum JDBCJavaTypes {
     //name需要保持与js一致，所有采用大小驼峰写法
-    _BOOLEAN("boolean", List.of(16)),
-    _BYTE("byte", List.of(-6)),
-    _SHORT("short", List.of(5)),
-    _INT("int", List.of(4)),
-    _LONG("long", List.of(-5)),
-    _FLOAT("float", List.of(7)),
-    _DOUBLE("double", List.of(8)),
-    _BIGDECIMAL("bigDecimal", List.of(2, 3)),
+    _BOOLEAN("boolean", Arrays.asList(16)),
+    _BYTE("byte", Arrays.asList(-6)),
+    _SHORT("short", Arrays.asList(5)),
+    _INT("int", Arrays.asList(4)),
+    _LONG("long", Arrays.asList(-5)),
+    _FLOAT("float", Arrays.asList(6,7)),
+    _DOUBLE("double", Arrays.asList(8)),
+    _BIGDECIMAL("bigDecimal", Arrays.asList(2, 3)),
     //
-    _STRING("string", List.of(1, 12, -1,-9)),
-    _DATE("date", List.of(91)),
-    _YEAR("year", List.of(91)),
-    _TIME("time", List.of(92)),
-    _TIMESTAMP("timestamp", List.of(93)),
-    _BYTES("bytes", List.of(-2, -3, -4)),
-    _BLOB("blob", List.of(2004)),
-    _CLOB("clob", List.of(2005)),
-    _URL("url", List.of(70)),
-    _OBJECT("object", List.of(2000, 1111)),
+    _STRING("string", Arrays.asList(1, 12, -1,-9)),
+    _DATE("date", Arrays.asList(91)),
+    _YEAR("year", Arrays.asList(91)),
+    _TIME("time", Arrays.asList(92)),
+    _TIMESTAMP("timestamp", Arrays.asList(93)),
+    _BYTES("bytes", Arrays.asList(-2, -3, -4)),
+    _BLOB("blob", Arrays.asList(2004)),
+    _CLOB("clob", Arrays.asList(2005)),
+    _URL("url", Arrays.asList(70)),
+    _OBJECT("object", Arrays.asList(2000, 1111)),
     // bit 0或者1 方便前端操作，在java中通常转换为布尔值
-    _BIT("bit", List.of(-7));
+    _BIT("bit", Arrays.asList(-7));
 
     private String name;
     private List<Integer> values;

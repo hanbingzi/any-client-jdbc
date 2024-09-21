@@ -1,6 +1,7 @@
 package com.hanshan.app.service.impl;
 
 import com.hanshan.common.config.IJdbcConfiguration;
+import com.hanshan.common.pojo.model.ColumnMeta;
 import com.hanshan.common.pojo.model.PrimaryInfo;
 import com.hanshan.common.pojo.model.VFTSPInfo;
 import com.hanshan.common.pojo.query.ConnectQuery;
@@ -98,6 +99,14 @@ public class AllSqlBaseService {
             return Result.error(ResponseEnum.PARAM_ERROR);
         }
         return SqlMetaOperator.showPrimary(connectQuery, jdbcConfigurationApi,table);
+    }
+
+    public Result<List<ColumnMeta>> showColumn(ConnectQuery connectQuery, String table) throws Exception {
+        IJdbcConfiguration jdbcConfigurationApi = sqlConfigService.getServerConfigurationApi(connectQuery.getServer());
+        if (jdbcConfigurationApi.hasSchema() && StringUtils.isEmpty(connectQuery.getSchema())) {
+            return Result.error(ResponseEnum.PARAM_ERROR);
+        }
+        return SqlMetaOperator.showColumn(connectQuery, jdbcConfigurationApi,table);
     }
 
     //展示所有的trigger

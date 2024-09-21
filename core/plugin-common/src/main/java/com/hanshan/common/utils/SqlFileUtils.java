@@ -25,7 +25,7 @@ public class SqlFileUtils {
                 outputStream.write(buffer, 0, bytesRead);
                 totalBytesRead += bytesRead;
             }
-            return outputStream.toString(StandardCharsets.UTF_8);
+            return outputStream.toString();
         }
     }
     public static String clobToString(Clob clob, long maxLength) throws SQLException, IOException {

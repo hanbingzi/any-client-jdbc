@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class JdbcConnectConfig {
     private String jdbcUrl;
     private String driver;
-    private Integer maximumPoolSize = 5;
+    private Integer maximumPoolSize = 3;
     private Integer minimumIdle = 1;
     //maxLifeTime: 1800000  # 30分钟
     //idleTimeout: 600000   # 10分钟

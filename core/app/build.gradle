@@ -7,14 +7,15 @@ dependencies {
     implementation project(':core:server:server-dameng8')
     implementation project(':core:server:server-db2-11')
 //    implementation (project(':core:server:server-hive3'))
-    implementation project(':core:server:server-mysql8')
+//    implementation project(':core:server:server-mysql8')
     implementation project(':core:server:server-oceanbase2')
     implementation project(':core:server:server-mssql12')
-    implementation project(':core:server:server-postgresql42')
+//    implementation project(':core:server:server-postgresql42')
     implementation project(':core:server:server-presto02')
+    implementation project(':core:server:server-tdengine3')
     implementation project(':core:server:server-trino4')
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.zaxxer:HikariCP:5.1.0'
+    implementation 'com.zaxxer:HikariCP:4.0.3'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

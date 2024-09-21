@@ -4,6 +4,7 @@ import com.hanshan.common.pojo.model.ServerInfo;
 
 public interface IJdbcConfiguration {
 
+
     String getDriver();
 
     String getServerUrl(ServerInfo server);
@@ -50,7 +51,7 @@ public interface IJdbcConfiguration {
 
     String getDefaultSchema();
 
-   // IJdbcConfiguration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout);
+    // IJdbcConfiguration getInstance(Integer maximumPoolSize, Integer minimumIdle, Long maxLifeTime, Long idleTimeout);
 
 
 }

@@ -1,5 +1,5 @@
 dependencies {
     implementation project(':core:plugin-common')
-    implementation 'com.zaxxer:HikariCP:5.1.0'
+    implementation 'com.zaxxer:HikariCP:4.0.3'
 }
 

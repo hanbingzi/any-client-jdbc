@@ -10,6 +10,7 @@ import com.hanshan.common.pojo.query.ConnectQuery;
 import com.hanshan.common.pojo.query.SqlQuery;
 import com.hanshan.common.pojo.result.Result;
 import com.hanshan.common.pojo.result.RunSqlResult;
+import com.hanshan.common.types.JdbcServerTypeEnum;
 import com.hanshan.common.types.ResponseEnum;
 import com.hanshan.common.utils.SqlDateUtils;
 import com.hanshan.common.utils.SqlPatternUtils;
@@ -20,10 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.util.*;
 
 public class SqlExecutor {
 
@@ -41,7 +40,7 @@ public class SqlExecutor {
             connection = connectResult.getData();
             SqlQueryParam sqlQueryParam = null;
             if (tableQuery) {
-                sqlQueryParam = SqlQueryParam.getInstance(true, query, connectQuery.getDb(), connectQuery.getSchema(), configurationApi);
+                sqlQueryParam = SqlQueryParam.getInstance(true, query,connectQuery.getServer().getServerType(), connectQuery.getDb(), connectQuery.getSchema(), configurationApi);
             } else {
                 sqlQueryParam = SqlUtils.getSqlQuery(connectQuery, configurationApi, query);
             }
@@ -147,7 +146,7 @@ public class SqlExecutor {
                             break;
                         case _BYTES:
                             byte[] tempByte = resultSet.getBytes(i);
-                            value = FileInfo.getInstance(tempByte);
+                            value = FileInfo.getInstance(tempByte, JdbcServerTypeEnum.valueOf(sqlQuery.getServerType()));
                             break;
                         case _URL:
                             java.net.URL tempUrl = resultSet.getURL(i);
@@ -198,7 +197,7 @@ public class SqlExecutor {
     public static List<RunSqlResult> multiExecute(ConnectQuery connectQuery, IJdbcConfiguration configurationApi, List<String> sqlList, List<List<SqlPsParam>> psParams) {
         Result<Connection> connectResult = DataSourceFactory.getConnection(connectQuery, configurationApi);
         if (!connectResult.getSuccess()) {
-            return List.of(Result.runSqlError(connectResult));
+            return Arrays.asList(Result.runSqlError(connectResult));
         }
         Connection connection = null;
         try {
@@ -215,7 +214,7 @@ public class SqlExecutor {
             }
             return runSqlResultList;
         } catch (Exception e) {
-            return List.of(Result.runSqlError(ResponseEnum.UNKNOWN_ERROR.code, e.getMessage()));
+            return Arrays.asList(Result.runSqlError(ResponseEnum.UNKNOWN_ERROR.code, e.getMessage()));
         } finally {
             try {
                 if (connection != null) {
@@ -289,7 +288,7 @@ public class SqlExecutor {
     public static List<RunSqlResult> runBatch(ConnectQuery connectQuery, IJdbcConfiguration configurationApi, BatchSqlQuery batchQuery) {
         Result<Connection> connectResult = DataSourceFactory.getConnection(connectQuery, configurationApi);
         if (!connectResult.getSuccess()) {
-            return List.of(Result.runSqlError(connectResult));
+            return Arrays.asList(Result.runSqlError(connectResult));
         }
         List<RunSqlResult> batchSqlResultList = new ArrayList<>();
         Connection connection = null;
@@ -314,7 +313,7 @@ public class SqlExecutor {
             return batchSqlResultList;
         } catch (Exception e) {
             e.printStackTrace();
-            return List.of(Result.runSqlError(ResponseEnum.UNKNOWN_ERROR.code, e.getMessage()));
+            return Arrays.asList(Result.runSqlError(ResponseEnum.UNKNOWN_ERROR.code, e.getMessage()));
         } finally {
             try {
                 if (connection != null) {

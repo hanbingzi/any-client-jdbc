@@ -10,6 +10,7 @@ import com.hanshan.app.model.request.ServerRequestEmpty;
 import com.hanshan.app.model.vo.TableVo;
 import com.hanshan.app.service.impl.AllSqlBaseService;
 import com.hanshan.app.service.impl.SqlRunService;
+import com.hanshan.common.pojo.model.ColumnMeta;
 import com.hanshan.common.pojo.model.PrimaryInfo;
 import com.hanshan.common.pojo.model.ServerInfo;
 import com.hanshan.common.pojo.model.VFTSPInfo;
@@ -182,6 +183,17 @@ public class JdbcSqlRest {
         }
         return allSqlService.showPrimary(connectQuery, request.getData());
     }
+
+    @PostMapping("showColumns")
+    public Result<List<ColumnMeta>> showColumn(@RequestBody ServerRequest<String> request) throws Exception {
+        ConnectQuery connectQuery = request.getConnect();
+        if (StringUtils.isEmpty(request.getData())) {
+            return Result.runSqlError(ResponseEnum.PARAM_ERROR);
+        }
+        return allSqlService.showColumn(connectQuery, request.getData());
+    }
+
+
 
 
     //table 数据查询

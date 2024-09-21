@@ -1,6 +1,7 @@
 package com.hanshan.common.pojo.model;
 
 import com.hanshan.common.types.JDBCJavaTypes;
+import com.hanshan.common.types.JdbcServerTypeEnum;
 import com.hanshan.common.utils.SqlFileUtils;
 import lombok.Data;
 
@@ -66,6 +67,23 @@ public class FileInfo implements Serializable {
             fileInfo.setLength(length.longValue());
             fileInfo.setType(JDBCJavaTypes._BYTES.getName());
             fileInfo.setData(SqlFileUtils.byteArrayToString(bytes, MAX_LENGTH));
+            return fileInfo;
+        }
+        return null;
+
+    }
+
+    public static FileInfo getInstance(byte[] bytes, JdbcServerTypeEnum type) {
+        if (bytes != null) {
+            FileInfo fileInfo = new FileInfo();
+            Integer length = bytes.length;
+            fileInfo.setName("(BYTE) " + length + " bytes");
+            fileInfo.setLength(length.longValue());
+            fileInfo.setType(JDBCJavaTypes._BYTES.getName());
+            //个别类型不支持转换
+            if (type != JdbcServerTypeEnum.SQLServer) {
+                fileInfo.setData(SqlFileUtils.byteArrayToString(bytes, MAX_LENGTH));
+            }
             return fileInfo;
         }
         return null;

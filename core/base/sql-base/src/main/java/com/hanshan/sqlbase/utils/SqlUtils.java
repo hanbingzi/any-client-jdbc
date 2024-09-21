@@ -54,6 +54,7 @@ public class SqlUtils {
         sqlQueryParam.setConfig(config);
         sqlQueryParam.setParams(params);
         sqlQueryParam.setAlyColumn(alyColumn);
+        sqlQueryParam.setServerType(connectQuery.getServer().getServerType());
         //以sql中的db或者schema为标准
         return sqlQueryParam;
     }

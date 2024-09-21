@@ -14,9 +14,10 @@ import com.hanshan.dialect.MysqlDialect;
 //import com.hanshan.hive3.config.Hive3Configuration;
 import com.hanshan.mssql12.config.Mssql12Configuration;
 import com.hanshan.oceanbase2.config.Oceanbase2Configuration;
-import com.hanshan.mysql8.config.Mysql8Configuration;
-import com.hanshan.postgresql42.config.Postgresql42Configuration;
+//import com.hanshan.mysql8.config.Mysql8Configuration;
+//import com.hanshan.postgresql42.config.Postgresql42Configuration;
 import com.hanshan.presto02.config.Presto02Configuration;
+import com.hanshan.tdengine3.config.TDEngine3Configuration;
 import com.hanshan.trino4.config.Trino4Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +49,9 @@ public class SqlConfigService implements ISqlConfigService {
         switch (serverTypeEnum) {
             case TiDB:
             case Mysql:
-                return Mysql8Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+//                return Mysql8Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case Postgresql:
-                return Postgresql42Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
+//                return Postgresql42Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case SQLServer:
                 return Mssql12Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case DB2:
@@ -66,6 +67,8 @@ public class SqlConfigService implements ISqlConfigService {
             case Hive:
 //               return hive3Configuration;
                 break;
+            case TDEngine:
+                return TDEngine3Configuration.getInstance(maximumPoolSize,minimumIdle,maxLifeTime,idleTimeout);
             case FileMaker:
                 break;
             case Teradata:
